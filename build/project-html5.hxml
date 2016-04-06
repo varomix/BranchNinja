@@ -1,8 +1,8 @@
 -cp /home/varomix/dev/Kha/Sources
 -cp /home/varomix/dev/Kha/Backends/HTML5
 -cp ../Sources
--cp /home/varomix/haxelib/kha2d/16,1,1/Sources
--cp /home/varomix/haxelib/kha2d/16,1,1
+-cp /usr/lib/haxelib/kha2d/git/Sources
+-cp /usr/lib/haxelib/kha2d/git
 -D sys_g1
 -D sys_g2
 -D sys_g3

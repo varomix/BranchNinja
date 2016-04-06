@@ -3,32 +3,49 @@ package;
 import kha.Assets;
 import kha.graphics2.Graphics;
 
+import kha.Sound;
+import kha2d.Scene;
 import kha2d.Sprite;
 import kha2d.Animation;
 
 class Shuriken extends Sprite{
 
-	public function new():Void
-	{
-	    super(Assets.images.shuriken, 26, 26);
+	public static var sound:Sound;
 
-	    // set the image
-	    this.image = Assets.images.shuriken;
-	    
+	public function new(x:Float, y:Float)
+	{
+	    super(Assets.images.shuriken, 26, 26, 0);
+	    this.x = x;
+	    this.y = y;
+	    speedx = 20;
+	    accy = 0;
+    
 	    originX = 13;
 	    originY = 13;	
-	    accx = 15;
-	    y = 10;
+	}
 
+	override public function hit(sprite:Sprite):Void
+	{
+		trace("a bug");
+		if(Std.is(sprite, Bug)){
+			Scene.the.removeProjectile(this);
+			cast(sprite, Bug).hitWithShot();
+		}
+	}
+
+	override public function outOfView():Void
+	{
+		// Scene.the.removeProjectile(this);
+		x = 0;
 	}
 
 	override public function update():Void {
 		super.update();
 		if(this.x > 580)
 		{
-			this.x = 0;
+			this.outOfView();
 		}
-		x += accx;
+		x += speedx;
 		angle += 0.2;
 	}
 

@@ -9,6 +9,44 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
+var BranchNinja = function() {
+	kha_Assets.loadEverything($bind(this,this.create));
+	kha_System.notifyOnRender($bind(this,this.render));
+	kha_Scheduler.addTimeTask($bind(this,this.update),0,0.0166666666666666664);
+};
+$hxClasses["BranchNinja"] = BranchNinja;
+BranchNinja.__name__ = true;
+BranchNinja.prototype = {
+	player: null
+	,shuriken: null
+	,explosion: null
+	,bug: null
+	,create: function() {
+		this.player = new Player();
+		this.shuriken = new Shuriken(100,10);
+		this.explosion = new Explosion();
+		this.bug = new Bug();
+		this.bug.x = 350;
+		this.explosion.x = 200;
+		kha2d_Scene.get_the().setBackgroundColor(kha__$Color_Color_$Impl_$.Green);
+		kha2d_Scene.get_the().addHero(this.player);
+		kha2d_Scene.get_the().addEnemy(this.bug);
+		kha2d_Scene.get_the().addProjectile(this.shuriken);
+	}
+	,shot: function() {
+		kha2d_Scene.get_the().addProjectile(new Shuriken(0,10));
+	}
+	,update: function() {
+		kha2d_Scene.get_the().update();
+	}
+	,render: function(framebuffer) {
+		var g = framebuffer.get_g2();
+		g.begin();
+		kha2d_Scene.get_the().render(g);
+		g.end();
+	}
+	,__class__: BranchNinja
+};
 var kha2d_Sprite = $hx_exports.kha2d.Sprite = function(image,width,height,z) {
 	if(z == null) z = 1;
 	if(height == null) height = 0;
@@ -166,8 +204,9 @@ Bug.__name__ = true;
 Bug.__super__ = kha2d_Sprite;
 Bug.prototype = $extend(kha2d_Sprite.prototype,{
 	walk: null
-	,update: function() {
-		kha2d_Sprite.prototype.update.call(this);
+	,hitWithShot: function() {
+		haxe_Log.trace("I was hit",{ fileName : "Bug.hx", lineNumber : 28, className : "Bug", methodName : "hitWithShot"});
+		kha2d_Scene.get_the().removeEnemy(this);
 	}
 	,__class__: Bug
 });
@@ -341,12 +380,13 @@ $hxClasses["Main"] = Main;
 Main.__name__ = true;
 Main.main = function() {
 	kha_System.init({ title : "Branch Ninja", width : 800, height : 480},function() {
-		new Project();
+		new BranchNinja();
 	});
 };
 Math.__name__ = true;
 var Player = function() {
 	kha2d_Sprite.call(this,kha_Assets.images.ninjaBlack2,36,36);
+	Player.instance = this;
 	this.walk = kha2d_Animation.createRange(12,15,5);
 	this.jump = kha2d_Animation.create(17);
 	this.shoot = kha2d_Animation.create(23);
@@ -354,6 +394,9 @@ var Player = function() {
 };
 $hxClasses["Player"] = Player;
 Player.__name__ = true;
+Player.getInstance = function() {
+	return Player.instance;
+};
 Player.__super__ = kha2d_Sprite;
 Player.prototype = $extend(kha2d_Sprite.prototype,{
 	walk: null
@@ -364,41 +407,6 @@ Player.prototype = $extend(kha2d_Sprite.prototype,{
 	}
 	,__class__: Player
 });
-var Project = function() {
-	kha_Assets.loadEverything($bind(this,this.create));
-	kha_System.notifyOnRender($bind(this,this.render));
-	kha_Scheduler.addTimeTask($bind(this,this.update),0,0.0166666666666666664);
-};
-$hxClasses["Project"] = Project;
-Project.__name__ = true;
-Project.prototype = {
-	player: null
-	,shuriken: null
-	,explosion: null
-	,bug: null
-	,create: function() {
-		this.player = new Player();
-		this.shuriken = new Shuriken();
-		this.explosion = new Explosion();
-		this.bug = new Bug();
-		this.bug.x = 350;
-		this.explosion.x = 200;
-		kha2d_Scene.get_the().addHero(this.player);
-		kha2d_Scene.get_the().addEnemy(this.bug);
-		kha2d_Scene.get_the().addOther(this.explosion);
-		kha2d_Scene.get_the().addProjectile(this.shuriken);
-	}
-	,update: function() {
-		kha2d_Scene.get_the().update();
-	}
-	,render: function(framebuffer) {
-		var g = framebuffer.get_g2();
-		g.begin();
-		kha2d_Scene.get_the().render(g);
-		g.end();
-	}
-	,__class__: Project
-};
 var Reflect = function() { };
 $hxClasses["Reflect"] = Reflect;
 Reflect.__name__ = true;
@@ -419,22 +427,33 @@ Reflect.callMethod = function(o,func,args) {
 Reflect.isFunction = function(f) {
 	return typeof(f) == "function" && !(f.__name__ || f.__ename__);
 };
-var Shuriken = function() {
-	kha2d_Sprite.call(this,kha_Assets.images.shuriken,26,26);
-	this.image = kha_Assets.images.shuriken;
+var Shuriken = function(x,y) {
+	kha2d_Sprite.call(this,kha_Assets.images.shuriken,26,26,0);
+	this.x = x;
+	this.y = y;
+	this.speedx = 20;
+	this.accy = 0;
 	this.originX = 13;
 	this.originY = 13;
-	this.accx = 15;
-	this.y = 10;
 };
 $hxClasses["Shuriken"] = Shuriken;
 Shuriken.__name__ = true;
 Shuriken.__super__ = kha2d_Sprite;
 Shuriken.prototype = $extend(kha2d_Sprite.prototype,{
-	update: function() {
+	hit: function(sprite) {
+		haxe_Log.trace("a bug",{ fileName : "Shuriken.hx", lineNumber : 29, className : "Shuriken", methodName : "hit"});
+		if(js_Boot.__instanceof(sprite,Bug)) {
+			kha2d_Scene.get_the().removeProjectile(this);
+			(js_Boot.__cast(sprite , Bug)).hitWithShot();
+		}
+	}
+	,outOfView: function() {
+		this.x = 0;
+	}
+	,update: function() {
 		kha2d_Sprite.prototype.update.call(this);
-		if(this.x > 580) this.x = 0;
-		this.x += this.accx;
+		if(this.x > 580) this.outOfView();
+		this.x += this.speedx;
 		this.angle += 0.2;
 	}
 	,__class__: Shuriken
@@ -1855,19 +1874,12 @@ kha_Assets.loadEverything = function(callback) {
 	var _g8 = 0;
 	var _g17 = Type.getInstanceFields(kha_SoundList);
 	while(_g8 < _g17.length) {
-		var sound1 = [_g17[_g8]];
+		var sound1 = _g17[_g8];
 		++_g8;
-		if(StringTools.endsWith(sound1[0],"Load")) (Reflect.field(kha_Assets.sounds,sound1[0]))((function(sound1) {
-			return function() {
-				var sound2 = Reflect.field(kha_Assets.sounds,sound1[0].substring(0,sound1[0].length - 4));
-				sound2.uncompress((function() {
-					return function() {
-						--filesLeft;
-						if(filesLeft == 0) callback();
-					};
-				})());
-			};
-		})(sound1));
+		if(StringTools.endsWith(sound1,"Load")) (Reflect.field(kha_Assets.sounds,sound1))(function() {
+			--filesLeft;
+			if(filesLeft == 0) callback();
+		});
 	}
 	var _g9 = 0;
 	var _g18 = Type.getInstanceFields(kha_FontList);
@@ -2632,39 +2644,18 @@ kha_LoaderImpl.loadImageFromDescription = function(desc,done) {
 	};
 };
 kha_LoaderImpl.getSoundFormats = function() {
-	var element;
-	var _this = window.document;
-	element = _this.createElement("audio");
-	var formats = [];
-	if(element.canPlayType("audio/mp4") != "") formats.push("mp4");
-	if(kha_SystemImpl._hasWebAudio || element.canPlayType("audio/ogg") != "") formats.push("ogg");
-	return formats;
+	if(kha_SystemImpl._hasWebAudio) return ["ogg"]; else return ["mp4","ogg"];
 };
 kha_LoaderImpl.loadSoundFromDescription = function(desc,done) {
 	if(kha_SystemImpl._hasWebAudio) {
-		var element;
-		var _this = window.document;
-		element = _this.createElement("audio");
-		if(element.canPlayType("audio/mp4") != "") {
-			var _g1 = 0;
-			var _g = desc.files.length;
-			while(_g1 < _g) {
-				var i = _g1++;
-				var file = desc.files[i];
-				if(StringTools.endsWith(file,".mp4")) {
-					new kha_js_WebAudioSound(file,done);
-					return;
-				}
-			}
-		}
-		var _g11 = 0;
-		var _g2 = desc.files.length;
-		while(_g11 < _g2) {
-			var i1 = _g11++;
-			var file1 = desc.files[i1];
-			if(StringTools.endsWith(file1,".ogg")) {
-				new kha_js_WebAudioSound(file1,done);
-				return;
+		var _g1 = 0;
+		var _g = desc.files.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var file = desc.files[i];
+			if(StringTools.endsWith(file,".ogg")) {
+				new kha_js_WebAudioSound(file,done);
+				break;
 			}
 		}
 	} else new kha_js_Sound(desc.files,done);
@@ -2703,12 +2694,12 @@ kha_LoaderImpl.loadBlobFromDescription = function(desc,done) {
 					bytes.b[i1] = data[i1] & 255;
 				}
 			} else {
-				haxe_Log.trace("Error loading " + desc.files[0],{ fileName : "LoaderImpl.hx", lineNumber : 103, className : "kha.LoaderImpl", methodName : "loadBlobFromDescription"});
+				haxe_Log.trace("Error loading " + desc.files[0],{ fileName : "LoaderImpl.hx", lineNumber : 90, className : "kha.LoaderImpl", methodName : "loadBlobFromDescription"});
 				window.console.log("loadBlob failed");
 			}
 			done(new kha_internal_BytesBlob(bytes));
 		} else {
-			haxe_Log.trace("Error loading " + desc.files[0],{ fileName : "LoaderImpl.hx", lineNumber : 109, className : "kha.LoaderImpl", methodName : "loadBlobFromDescription"});
+			haxe_Log.trace("Error loading " + desc.files[0],{ fileName : "LoaderImpl.hx", lineNumber : 96, className : "kha.LoaderImpl", methodName : "loadBlobFromDescription"});
 			window.console.log("loadBlob failed");
 		}
 	};
@@ -3150,42 +3141,9 @@ $hxClasses["kha.Sound"] = kha_Sound;
 kha_Sound.__name__ = true;
 kha_Sound.__interfaces__ = [kha_Resource];
 kha_Sound.prototype = {
-	compressedData: null
-	,uncompressedData: null
-	,uncompress: function(done) {
-		var output = new haxe_io_BytesOutput();
-		var header = kha_audio2_ogg_vorbis_Reader.readAll(this.compressedData,output,true);
-		var soundBytes = output.getBytes();
-		var count = soundBytes.length / 4 | 0;
-		if(header.channel == 1) {
-			var this1;
-			this1 = new Array(count * 2);
-			this.uncompressedData = this1;
-			var _g = 0;
-			while(_g < count) {
-				var i = _g++;
-				var val = soundBytes.getFloat(i * 4);
-				this.uncompressedData[i * 2] = val;
-				var val1 = soundBytes.getFloat(i * 4);
-				this.uncompressedData[i * 2 + 1] = val1;
-			}
-		} else {
-			var this2;
-			this2 = new Array(count);
-			this.uncompressedData = this2;
-			var _g1 = 0;
-			while(_g1 < count) {
-				var i1 = _g1++;
-				var val2 = soundBytes.getFloat(i1 * 4);
-				this.uncompressedData[i1] = val2;
-			}
-		}
-		this.compressedData = null;
-		done();
-	}
+	data: null
+	,compressed: null
 	,unload: function() {
-		this.compressedData = null;
-		this.uncompressedData = null;
 	}
 	,__class__: kha_Sound
 };
@@ -3900,8 +3858,6 @@ kha_SystemImpl.exitFullscreen = function() {
 };
 kha_SystemImpl.changeResolution = function(width,height) {
 };
-kha_SystemImpl.setKeepScreenOn = function(on) {
-};
 kha_SystemImpl.prototype = {
 	notifyOfFullscreenChange: function(func,error) {
 		window.document.addEventListener("fullscreenchange",func,false);
@@ -4301,17 +4257,9 @@ kha_audio2_Audio._init = function() {
 	kha_audio2_Audio.processingNode.connect(kha_audio2_Audio._context.destination);
 	return true;
 };
-kha_audio2_Audio.stream = function(sound,loop) {
+kha_audio2_Audio.play = function(sound,loop) {
 	if(loop == null) loop = false;
-	var element;
-	var _this = window.document;
-	element = _this.createElement("audio");
-	var blob = new Blob([sound.compressedData.b.bufferValue],{ type : "audio/mp4"});
-	element.src = URL.createObjectURL(blob);
-	element.loop = loop;
-	var channel = new kha_js_AEAudioChannel(element);
-	channel.play();
-	return channel;
+	return null;
 };
 var kha_audio2_Audio1 = function() { };
 $hxClasses["kha.audio2.Audio1"] = kha_audio2_Audio1;
@@ -4322,19 +4270,13 @@ kha_audio2_Audio1._init = function() {
 	kha_audio2_Audio1.soundChannels = this1;
 	var this2;
 	this2 = new Array(16);
-	kha_audio2_Audio1.streamChannels = this2;
+	kha_audio2_Audio1.internalSoundChannels = this2;
 	var this3;
-	this3 = new Array(16);
-	kha_audio2_Audio1.internalSoundChannels = this3;
+	this3 = new Array(512);
+	kha_audio2_Audio1.sampleCache1 = this3;
 	var this4;
-	this4 = new Array(16);
-	kha_audio2_Audio1.internalStreamChannels = this4;
-	var this5;
-	this5 = new Array(512);
-	kha_audio2_Audio1.sampleCache1 = this5;
-	var this6;
-	this6 = new Array(512);
-	kha_audio2_Audio1.sampleCache2 = this6;
+	this4 = new Array(512);
+	kha_audio2_Audio1.sampleCache2 = this4;
 	kha_audio2_Audio.audioCallback = kha_audio2_Audio1._mix;
 };
 kha_audio2_Audio1.max = function(a,b) {
@@ -4363,50 +4305,31 @@ kha_audio2_Audio1._mix = function(samples,buffer) {
 		kha_audio2_Audio1.internalSoundChannels[i1] = kha_audio2_Audio1.soundChannels[i1];
 	}
 	var _g2 = 0;
-	while(_g2 < 16) {
-		var i2 = _g2++;
-		kha_audio2_Audio1.internalStreamChannels[i2] = kha_audio2_Audio1.streamChannels[i2];
-	}
-	var _g3 = 0;
 	var _g11 = kha_audio2_Audio1.internalSoundChannels;
-	while(_g3 < _g11.length) {
-		var channel = _g11[_g3];
-		++_g3;
+	while(_g2 < _g11.length) {
+		var channel = _g11[_g2];
+		++_g2;
 		if(channel == null || channel.get_finished()) continue;
 		channel.nextSamples(kha_audio2_Audio1.sampleCache1,samples,buffer.samplesPerSecond);
 		var _g21 = 0;
 		while(_g21 < samples) {
-			var i3 = _g21++;
-			var _g31 = i3;
-			var val = kha_audio2_Audio1.sampleCache2[_g31] + kha_audio2_Audio1.sampleCache1[i3] * channel.get_volume();
-			kha_audio2_Audio1.sampleCache2[_g31] = val;
+			var i2 = _g21++;
+			var _g3 = i2;
+			var val = kha_audio2_Audio1.sampleCache2[_g3] + kha_audio2_Audio1.sampleCache1[i2] * channel.get_volume();
+			kha_audio2_Audio1.sampleCache2[_g3] = val;
 		}
 	}
 	var _g4 = 0;
-	var _g12 = kha_audio2_Audio1.internalStreamChannels;
-	while(_g4 < _g12.length) {
-		var channel1 = _g12[_g4];
-		++_g4;
-		if(channel1 == null || channel1.get_finished()) continue;
-		channel1.nextSamples(kha_audio2_Audio1.sampleCache1,samples,buffer.samplesPerSecond);
-		var _g22 = 0;
-		while(_g22 < samples) {
-			var i4 = _g22++;
-			var _g32 = i4;
-			var val1 = kha_audio2_Audio1.sampleCache2[_g32] + kha_audio2_Audio1.sampleCache1[i4] * channel1.get_volume();
-			kha_audio2_Audio1.sampleCache2[_g32] = val1;
-		}
-	}
-	var _g5 = 0;
-	while(_g5 < samples) {
-		var i5 = _g5++;
-		var val2 = kha_audio2_Audio1.max(kha_audio2_Audio1.min(kha_audio2_Audio1.sampleCache2[i5],1.0),-1.0);
-		buffer.data[buffer.writeLocation] = val2;
+	while(_g4 < samples) {
+		var i3 = _g4++;
+		var val1 = kha_audio2_Audio1.max(kha_audio2_Audio1.min(kha_audio2_Audio1.sampleCache2[i3],1.0),-1.0);
+		buffer.data[buffer.writeLocation] = val1;
 		buffer.writeLocation += 1;
 		if(buffer.writeLocation >= buffer.size) buffer.writeLocation = 0;
 	}
 };
-kha_audio2_Audio1.play = function(sound,loop) {
+kha_audio2_Audio1.play = function(sound,loop,stream) {
+	if(stream == null) stream = false;
 	if(loop == null) loop = false;
 	var channel = null;
 	var _g = 0;
@@ -4414,24 +4337,8 @@ kha_audio2_Audio1.play = function(sound,loop) {
 		var i = _g++;
 		if(kha_audio2_Audio1.soundChannels[i] == null || kha_audio2_Audio1.soundChannels[i].get_finished()) {
 			channel = new kha_audio2_AudioChannel(loop);
-			channel.data = sound.uncompressedData;
+			channel.data = sound.data;
 			kha_audio2_Audio1.soundChannels[i] = channel;
-			break;
-		}
-	}
-	return channel;
-};
-kha_audio2_Audio1.stream = function(sound,loop) {
-	if(loop == null) loop = false;
-	var hardwareChannel = kha_audio2_Audio.stream(sound,loop);
-	if(hardwareChannel != null) return hardwareChannel;
-	var channel = null;
-	var _g = 0;
-	while(_g < 16) {
-		var i = _g++;
-		if(kha_audio2_Audio1.streamChannels[i] == null || kha_audio2_Audio1.streamChannels[i].get_finished()) {
-			channel = new kha_audio2_StreamChannel(sound.compressedData,loop);
-			kha_audio2_Audio1.streamChannels[i] = channel;
 			break;
 		}
 	}
@@ -4518,70 +4425,6 @@ kha_audio2_Buffer.prototype = {
 	,readLocation: null
 	,writeLocation: null
 	,__class__: kha_audio2_Buffer
-};
-var kha_audio2_StreamChannel = function(data,loop) {
-	this.paused = false;
-	this.atend = false;
-	this.myVolume = 1;
-	this.loop = loop;
-	this.reader = kha_audio2_ogg_vorbis_Reader.openFromBytes(data);
-};
-$hxClasses["kha.audio2.StreamChannel"] = kha_audio2_StreamChannel;
-kha_audio2_StreamChannel.__name__ = true;
-kha_audio2_StreamChannel.__interfaces__ = [kha_audio1_AudioChannel];
-kha_audio2_StreamChannel.prototype = {
-	reader: null
-	,atend: null
-	,loop: null
-	,myVolume: null
-	,paused: null
-	,nextSamples: function(samples,length,sampleRate) {
-		if(this.paused) {
-			var _g = 0;
-			while(_g < length) {
-				var i = _g++;
-				samples[i] = 0;
-			}
-			return;
-		}
-		var count = this.reader.read(samples,length / 2 | 0,2,sampleRate,true) * 2;
-		if(count < length) {
-			if(this.loop) this.reader.set_currentMillisecond(0); else this.atend = true;
-			var _g1 = count;
-			while(_g1 < length) {
-				var i1 = _g1++;
-				samples[i1] = 0;
-			}
-		}
-	}
-	,play: function() {
-		this.paused = false;
-	}
-	,pause: function() {
-		this.paused = true;
-	}
-	,stop: function() {
-		this.atend = true;
-	}
-	,length: null
-	,get_length: function() {
-		return this.reader.get_totalMillisecond() / 1000.0;
-	}
-	,position: null
-	,get_position: function() {
-		return this.reader.get_currentMillisecond() / 1000.0;
-	}
-	,get_volume: function() {
-		return this.myVolume;
-	}
-	,set_volume: function(value) {
-		return this.myVolume = value;
-	}
-	,finished: null
-	,get_finished: function() {
-		return this.atend;
-	}
-	,__class__: kha_audio2_StreamChannel
 };
 var kha_audio2_ogg_tools_Crc32 = function() { };
 $hxClasses["kha.audio2.ogg.tools.Crc32"] = kha_audio2_ogg_tools_Crc32;
@@ -12002,8 +11845,8 @@ kha_internal_BytesBlob.prototype = {
 	}
 	,__class__: kha_internal_BytesBlob
 };
-var kha_js_AEAudioChannel = function(element) {
-	this.element = element;
+var kha_js_AEAudioChannel = function(sound) {
+	this.element = sound.element;
 };
 $hxClasses["kha.js.AEAudioChannel"] = kha_js_AEAudioChannel;
 kha_js_AEAudioChannel.__name__ = true;
@@ -12060,7 +11903,7 @@ kha_js_AudioElementAudio.play = function(sound,loop,stream) {
 	if(loop == null) loop = false;
 	sound.element.loop = loop;
 	sound.element.play();
-	return new kha_js_AEAudioChannel(sound.element);
+	return new kha_js_AEAudioChannel(sound);
 };
 var kha_js_CanvasGraphics = function(canvas,width,height) {
 	kha_graphics2_Graphics.call(this);
@@ -12525,15 +12368,43 @@ kha_js_Video.prototype = $extend(kha_Video.prototype,{
 var kha_js_WebAudioSound = function(filename,done) {
 	var _g = this;
 	kha_Sound.call(this);
+	this.done = done;
 	var request = new XMLHttpRequest();
 	request.open("GET",filename,true);
 	request.responseType = "arraybuffer";
 	request.onerror = function() {
-		haxe_Log.trace("Error loading " + filename,{ fileName : "WebAudioSound.hx", lineNumber : 76, className : "kha.js.WebAudioSound", methodName : "new"});
+		haxe_Log.trace("Error loading " + filename,{ fileName : "WebAudioSound.hx", lineNumber : 79, className : "kha.js.WebAudioSound", methodName : "new"});
+		window.console.log("loadSound failed");
 	};
 	request.onload = function() {
-		_g.compressedData = haxe_io_Bytes.ofData(request.response);
-		_g.uncompressedData = null;
+		var arrayBuffer = request.response;
+		var output = new haxe_io_BytesOutput();
+		var header = kha_audio2_ogg_vorbis_Reader.readAll(haxe_io_Bytes.ofData(arrayBuffer),output,true);
+		var soundBytes = output.getBytes();
+		var count = soundBytes.length / 4 | 0;
+		if(header.channel == 1) {
+			var this1;
+			this1 = new Array(count * 2);
+			_g.data = this1;
+			var _g1 = 0;
+			while(_g1 < count) {
+				var i = _g1++;
+				var val = soundBytes.getFloat(i * 4);
+				_g.data[i * 2] = val;
+				var val1 = soundBytes.getFloat(i * 4);
+				_g.data[i * 2 + 1] = val1;
+			}
+		} else {
+			var this2;
+			this2 = new Array(count);
+			_g.data = this2;
+			var _g11 = 0;
+			while(_g11 < count) {
+				var i1 = _g11++;
+				var val2 = soundBytes.getFloat(i1 * 4);
+				_g.data[i1] = val2;
+			}
+		}
 		done(_g);
 	};
 	request.send(null);
@@ -12542,43 +12413,8 @@ $hxClasses["kha.js.WebAudioSound"] = kha_js_WebAudioSound;
 kha_js_WebAudioSound.__name__ = true;
 kha_js_WebAudioSound.__super__ = kha_Sound;
 kha_js_WebAudioSound.prototype = $extend(kha_Sound.prototype,{
-	superUncompress: function(done) {
-		kha_Sound.prototype.uncompress.call(this,done);
-	}
-	,uncompress: function(done) {
-		var _g = this;
-		kha_audio2_Audio._context.decodeAudioData(this.compressedData.b.bufferValue,function(buffer) {
-			var length = buffer.getChannelData(0).length * 2;
-			var this1;
-			this1 = new Array(length);
-			_g.uncompressedData = this1;
-			if(buffer.numberOfChannels == 1) {
-				var _g2 = 0;
-				var _g1 = buffer.getChannelData(0).length;
-				while(_g2 < _g1) {
-					var i = _g2++;
-					var val = buffer.getChannelData(0)[i];
-					_g.uncompressedData[i * 2] = val;
-					var val1 = buffer.getChannelData(0)[i];
-					_g.uncompressedData[i * 2 + 1] = val1;
-				}
-			} else {
-				var _g21 = 0;
-				var _g11 = buffer.getChannelData(0).length;
-				while(_g21 < _g11) {
-					var i1 = _g21++;
-					var val2 = buffer.getChannelData(0)[i1];
-					_g.uncompressedData[i1 * 2] = val2;
-					var val3 = buffer.getChannelData(1)[i1];
-					_g.uncompressedData[i1 * 2 + 1] = val3;
-				}
-			}
-			_g.compressedData = null;
-			done();
-		},function() {
-			_g.superUncompress(done);
-		});
-	}
+	done: null
+	,buffer: null
 	,__class__: kha_js_WebAudioSound
 });
 var kha_js_graphics4_ConstantLocation = function(value) {

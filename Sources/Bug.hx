@@ -1,10 +1,9 @@
 package;
 
 import kha.Assets;
-import kha.graphics2.Graphics;
-
 import kha2d.Animation;
 import kha2d.Sprite;
+import kha2d.Scene;
 
 class Bug extends Sprite {
 	// SETUP ANIMATIONS
@@ -24,9 +23,10 @@ class Bug extends Sprite {
 		setAnimation(walk);
 	}
 
-	override public function update():Void {
-		super.update();
-		
+	public function hitWithShot():Void
+	{
+		trace("I was hit");
+		Scene.the.removeEnemy(this);
 	}
 	
 }
