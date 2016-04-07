@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="64" height="9" tilewidth="36" tileheight="36" nextobjectid="1">
+ <tileset firstgid="1" name="mapTiles" tilewidth="36" tileheight="36" tilecount="8">
+  <image source="mapTiles.png" width="288" height="36"/>
+ </tileset>
+ <tileset firstgid="9" name="mapTiles_colors" tilewidth="36" tileheight="36" tilecount="32">
+  <image source="mapTiles_colors.png" width="288" height="144"/>
+ </tileset>
+ <layer name="CYAN" width="64" height="9">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2BkApWBdgAQKA2g3YPB/wPphpHu/8EABjr+FQcYKxPhTtUBtHu4AwCmqQhf
+  </data>
+ </layer>
+ <layer name="GREEN" width="64" height="9">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4C6QGagHTDAYNT/QwdI0gBLY7FHlkZ2SVFgPkzvKBgFIxUAAD/yBiQ=
+  </data>
+ </layer>
+ <layer name="ORANGE" width="64" height="9">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4A0IDLQDsADSHWbIBlYGM0MUSL0iOMQJ9cNuMxHd9tgAbROM4M5TYKAxBA3fxSMguEIAPvQA9Y=
+  </data>
+ </layer>
+ <layer name="RED" width="64" height="9">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjZgJMA5kKj0dkgzI9DDyExfOL4zCfGvcSqpQbgoZI5A2U+pUCAxuYPdv/TGoz6f2SDke5/WpcvIxkAAE2JAr0=
+  </data>
+ </layer>
+</map>

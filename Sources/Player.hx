@@ -63,9 +63,6 @@ class Player extends Sprite {
 			trace("Health: ", health);
 		}
 
-		if(sprite.x < 0) collides = true;
-
-		trace(collides);
 	}
 
 	public static function getInstance():Player
