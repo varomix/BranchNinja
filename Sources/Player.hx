@@ -10,10 +10,15 @@ import kha2d.Sprite;
 
 class Player extends Sprite {
 	private static var instance:Player;
+	private var health:Int;
+	private var invincibility:Int;
+
 	// SETUP ANIMATIONS
 	public var walk:Animation;
 	public var jump:Animation;
 	public var shoot:Animation;
+
+
 
 	public function new()
 	{
@@ -26,6 +31,8 @@ class Player extends Sprite {
 		jump = Animation.create(17);
 		shoot = Animation.create(23);
 		accy = 0;
+
+		health = 100;
 
 		// set initial anim
 		setAnimation(walk);
@@ -47,6 +54,18 @@ class Player extends Sprite {
 			this.y += 72;
 		}
 	    
+	}
+
+	override public function hit(sprite:Sprite):Void
+	{
+		if(Std.is(sprite, Bug) && collides){
+			health -= 25;
+			trace("Health: ", health);
+		}
+
+		if(sprite.x < 0) collides = true;
+
+		trace(collides);
 	}
 
 	public static function getInstance():Player
