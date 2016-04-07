@@ -2,7 +2,7 @@ package;
 
 import kha.Assets;
 import kha.graphics2.Graphics;
-
+import kha2d.Direction;
 import kha2d.Animation;
 import kha2d.Scene;
 import kha2d.Sprite;
@@ -33,7 +33,20 @@ class Player extends Sprite {
 
 	public function shot():Void
 	{
-		Scene.the.addProjectile(new Shuriken(340, 10));
+		Scene.the.addProjectile(new Shuriken(x, y + 10));
+	}
+
+	public function move(dir:Direction):Void
+	{
+		if(dir == Direction.UP && this.y > 36)
+		{
+			this.y -= 72;
+		}
+		if(dir == Direction.DOWN && this.y < 252)
+		{
+			this.y += 72;
+		}
+	    
 	}
 
 	public static function getInstance():Player

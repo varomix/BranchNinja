@@ -28,8 +28,8 @@ class Bug extends Sprite {
 
 	public function hitWithShot():Void
 	{
-		trace("I was hit");
 		Scene.the.removeEnemy(this);
+		Scene.the.addProjectile(new Explosion(this.x, this.y));
 	}
 	
 }

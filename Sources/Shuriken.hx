@@ -28,7 +28,6 @@ class Shuriken extends Sprite{
 
 	override public function hit(sprite:Sprite):Void
 	{
-		trace("a bug");
 		if(Std.is(sprite, Bug)){
 			Scene.the.removeProjectile(this);
 			cast(sprite, Bug).hitWithShot();
@@ -37,13 +36,13 @@ class Shuriken extends Sprite{
 
 	override public function outOfView():Void
 	{
-		// Scene.the.removeProjectile(this);
-		x = 0;
+		Scene.the.removeProjectile(this);
 	}
 
 	override public function update():Void {
 		super.update();
 		angle += 0.2;
+		if(x > 580) outOfView(); // TODO: find how to use outofview()
 	}
 
 
