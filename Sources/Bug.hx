@@ -18,6 +18,9 @@ class Bug extends Sprite {
 		// animation frames
 		walk = Animation.createRange(0, 3, 5);
 
+		accy = 0;
+		speedx = -3;
+
 
 		// set initial anim
 		setAnimation(walk);

@@ -17,8 +17,10 @@ class Shuriken extends Sprite{
 	    super(Assets.images.shuriken, 26, 26, 0);
 	    this.x = x;
 	    this.y = y;
-	    speedx = 20;
+	    speedx = 10;
+	    // accx = 10;
 	    accy = 0;
+
     
 	    originX = 13;
 	    originY = 13;	
@@ -41,13 +43,9 @@ class Shuriken extends Sprite{
 
 	override public function update():Void {
 		super.update();
-		if(this.x > 580)
-		{
-			this.outOfView();
-		}
-		x += speedx;
 		angle += 0.2;
 	}
+
 
 
 	

@@ -4,7 +4,9 @@ import kha.Assets;
 import kha.graphics2.Graphics;
 
 import kha2d.Animation;
+import kha2d.Scene;
 import kha2d.Sprite;
+
 
 class Player extends Sprite {
 	private static var instance:Player;
@@ -23,9 +25,15 @@ class Player extends Sprite {
 		walk = Animation.createRange(12, 15, 5);
 		jump = Animation.create(17);
 		shoot = Animation.create(23);
+		accy = 0;
 
 		// set initial anim
 		setAnimation(walk);
+	}
+
+	public function shot():Void
+	{
+		Scene.the.addProjectile(new Shuriken(340, 10));
 	}
 
 	public static function getInstance():Player
