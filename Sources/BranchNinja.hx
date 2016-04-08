@@ -51,20 +51,18 @@ class BranchNinja {
 		var xml:Xml = Xml.parse(world.toString());
 		var fast:Fast = new Fast(xml.firstElement());
 		
+		var levels = new Array<Int>();
+
 		for (child in fast.elements) {
 			trace(child.name);
 			if(child.name == "layer"){
 				trace(child.node.data.innerData);
+				levels.push(Std.parseInt(child.node.data.innerData));
 			}
 		}
 
-
-
-		
-
-		var layerNodes = fast.nodes.layer;
-
-		
+		trace (levels[0]);
+		var map = new Array<Array<Int>>();
 
 		// for (i in 0 ... layerNodes.length) {
 		// 	trace(layerNodes.pop().data);
@@ -92,14 +90,7 @@ class BranchNinja {
 		player = new Player();
 		bug = new Bug();
 
-		// tmx khapunk
-		// var tmxEntity:TmxEntity = new TmxEntity(Assets.blobs.testMap_tmx);
-		// tmxEntity.loadGraphic("testMap", ["RED", "GREEN"]);
-		// trace("tmxEntity", tmxEntity);
-		// tmxEntity.loadMask("collision", "solid");
 		// Scene.the.addBackgroundTilemap(tmxEntity); 
-
-
 
 		bug.x = 450;
 		bug.y = 36;
