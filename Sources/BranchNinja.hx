@@ -15,24 +15,52 @@ import kha2d.Scene;
 import kha2d.Tilemap;
 import kha2d.Scene;
 
-// import tmx.TmxEntity;
 
-class Layer
-{
 
-    public var state:String;
-    public var volume:Int;
-    public var value:String;
-
-    //And so on, listing all the fields from the XML attributes and values.
-
-    public function new() { }
-}
 
 class BranchNinja {
 
 	public var player:Player;
 	public var bug:Bug;
+
+	/** The map width in tiles */
+	public var widthInTiles(default, null):Int;
+
+	/** The map height in tiles */
+	public var heightInTiles(default, null):Int;
+
+	/** The map width in pixels */
+	public var totalWidth(default, null):Int;
+
+	/** The map height in pixels */
+	public var totalHeight(default, null):Int;
+
+	/** TILED orientation: Orthogonal or Isometric */
+	// public var orientation(default, null):TiledMapOrientation;
+
+	/** The tile width */
+	public var tileWidth(default, null):Int;
+
+	/** The tile height */
+	public var tileHeight(default, null):Int;
+
+	/** The background color of the map */
+	public var backgroundColor(default, null):UInt;
+
+	/** All tilesets the map is using */
+	// public var tilesets(default, null):Array<Tileset>;
+
+	/** Contains all layers from this map */
+	public var layers(default, null):Array<Layer>;
+
+	/** All objectgroups */
+	// public var objectGroups(default, null):Array<TiledObjectGroup>;
+
+	/** All image layers **/
+	// public var imageLayers(default, null):Array<ImageLayer>;
+
+	/** All map properties */
+	public var properties(default, null):Map<String, String>;
 
 
 	public function new() {
@@ -47,6 +75,7 @@ class BranchNinja {
 		// MAP LOADING
 		
 		var world = Assets.blobs.testMap_tmx;
+		parseXml(world.toString());
 
 		var xml:Xml = Xml.parse(world.toString());
 		var fast:Fast = new Fast(xml.firstElement());
@@ -56,12 +85,13 @@ class BranchNinja {
 		for (child in fast.elements) {
 			trace(child.name);
 			if(child.name == "layer"){
-				trace(child.node.data.innerData);
-				levels.push(Std.parseInt(child.node.data.innerData));
+				// trace(child.node.data.innerData.split(","));
+				// for (i in child.node.data.innerData.split(",")) {
+				// 	trace (child.node.data.innerData[i]);
+				// }
 			}
 		}
 
-		trace (levels[0]);
 		var map = new Array<Array<Int>>();
 
 		// for (i in 0 ... layerNodes.length) {
@@ -104,6 +134,25 @@ class BranchNinja {
 		if (Keyboard.get() != null) Keyboard.get().notify(keyDown, null);
 
 
+	}
+
+	public function parseXml(xml:String)
+	{
+	    var xml = Xml.parse(xml).firstElement();
+	    trace(xml);
+
+		trace(Std.parseInt(xml.get("width")));
+		// this.widthInTiles = Std.parseInt(xml.get("width"));
+		// this.heightInTiles = Std.parseInt(xml.get("height"));
+		// this.orientation = xml.get("orientation") == "orthogonal" ?
+		// 	TiledMapOrientation.Orthogonal : TiledMapOrientation.Isometric;
+		// this.tileWidth = Std.parseInt(xml.get("tilewidth"));
+		// this.tileHeight = Std.parseInt(xml.get("tileheight"));
+		// this.tilesets = new Array<Tileset>();
+		// this.layers = new Array<Layer>();
+		// this.objectGroups = new Array<TiledObjectGroup>();
+		// this.imageLayers = new Array<ImageLayer>();
+		// this.properties = new Map<String, String>();
 	}
 
 	public function shot():Void
