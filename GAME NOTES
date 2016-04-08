@@ -8,3 +8,4 @@ add effect when moving
 make branches, maybe tiled map? :) maybe random generation
 
 
+Scheduler.addTimeTask(dowhatever, 2)
