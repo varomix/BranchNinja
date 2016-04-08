@@ -23,8 +23,7 @@
 // This file contains code from the HaxePunk project
 // Link to HaxePunk: <http://haxepunk.com>
 // Link to related file: <https://github.com/HaxePunk/tiled/blob/master/com/haxepunk/tmx/TmxLayer.hx>
-package;
-import kha2d.Tilemap;
+package kha.tiled;
 
 class Layer {
 
@@ -47,9 +46,9 @@ class Layer {
 	public var tiles(default, null):Array<Tile>;
 
 	/** The parent TiledMap */
-	public var parent(default, null):Tilemap;
+	public var parent(default, null):TiledMap;
 
-	private function new(parent:Tilemap, name:String, width:Int, height:Int,
+	private function new(parent:TiledMap, name:String, width:Int, height:Int,
 			opacity:Float, visible:Bool, tiles:Array<Int>) {
 		this.parent = parent;
 		this.name = name;
@@ -71,7 +70,7 @@ class Layer {
 	 * @param
 	 * @return A new layer
 	 */
-	public static function fromGenericXml(xml:Xml, parent:Tilemap):Layer {
+	public static function fromGenericXml(xml:Xml, parent:TiledMap):Layer {
 		var name:String = xml.get("name");
 		var width:Int = Std.parseInt(xml.get("width"));
 		var height:Int = Std.parseInt(xml.get("height"));
