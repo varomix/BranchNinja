@@ -2,10 +2,8 @@ package kha.tiled;
 
 import haxe.xml.Fast;
 import kha.Framebuffer;
+import kha.graphics2.Graphics;
 import kha.tiled.display.KhaRenderer;
-
-import haxe.io.Path;
-
 import kha.tiled.display.Renderer;
 
 /**
@@ -13,6 +11,11 @@ import kha.tiled.display.Renderer;
  * @author Christopher Kaster
  */
 class TiledMap {
+
+	public var camx(default, set): Int;
+	public var camy(default, set): Int;
+	public var screenOffsetX: Int;
+	public var screenOffsetY: Int;
 
 	public var version:String;
 	public var bgColor:Color;
@@ -79,11 +82,23 @@ class TiledMap {
 		source = new Fast(Xml.parse(xml));
 		source = source.node.map;
 
+		// init arrays
+		this.properties = new Map<String, String>();
+		this.imageLayers = new Array<ImageLayer>();
+		this.tilesets = new Array<Tileset>();
+		this.objectGroups = new Array<TiledObjectGroup>();
+		this.layers = new Array<Layer>();
+
+
 		// load tmx stuff in chunks
 		loadAttributes(source);
 		loadProperties(source);
 		loadTilesets(source);
 		loadLayers(source);
+
+		//set camera to 0
+		camx = 0;
+		camy = 0;
 
 
 		this.renderer = renderer;
@@ -98,7 +113,7 @@ class TiledMap {
 
 	 	version = (source.att.version != null) ? source.att.version : "unknown";
 		orientation = (source.att.orientation != null) ? TiledMapOrientation.Orthogonal : TiledMapOrientation.Isometric;
-		bgColor = (source.has.backgroundcolor && source.att.backgroundcolor != null) ? Color.fromString(source.att.backgroundcolor) : null;
+		bgColor = (source.has.backgroundcolor && source.att.backgroundcolor != null) ? Color.fromString(source.att.backgroundcolor) : Color.fromValue(0x000000);
 		tileWidth = Std.parseInt(source.att.tilewidth);
 		tileHeight = Std.parseInt(source.att.tileheight);
 		
@@ -111,7 +126,7 @@ class TiledMap {
 
 	private function loadProperties(source:Fast):Void
 	{
-		this.properties = new Map<String, String>();
+		
 		for(child in source.elements)
 		{
 			if(child.name == "layer")
@@ -123,7 +138,7 @@ class TiledMap {
 
 	private function loadTilesets(source:Fast):Void
 	{
-		this.tilesets = new Array<Tileset>();
+		
 		for(child in source.elements)
 		{
 			var tileset:Tileset = null;
@@ -141,7 +156,6 @@ class TiledMap {
 	public function loadLayers(source:Fast):Void
 	{
 		// LAYERS
-		this.layers = new Array<Layer>();
 		for(child in source.elements)
 		{
 			if (child.name == "layer")
@@ -152,7 +166,6 @@ class TiledMap {
 			}
 
 			// OBJECT GROUPS
-			this.objectGroups = new Array<TiledObjectGroup>();
 			if (child.name == "objectgroup")
 			{
 				var objectGroup = TiledObjectGroup.fromGenericXml(child.x);
@@ -161,8 +174,7 @@ class TiledMap {
 			}
 
 			// IMAGE LAYERS
-			this.imageLayers = new Array<ImageLayer>();
-			if (child.name == "objectgroup")
+			if (child.name == "imagelayer")
 			{
 				var imageLayer = ImageLayer.fromGenericXml(this, child.x);
 
@@ -173,14 +185,15 @@ class TiledMap {
 
 	public function render(framebuffer:Framebuffer) {
 		renderer.clear(framebuffer);
+					
+		for(imageLayer in this.imageLayers) {
+			renderer.drawImageLayer(framebuffer, imageLayer);
+		}
 
 		for(layer in this.layers) {
 			renderer.drawLayer(framebuffer, layer);
 		}
 
-		for(imageLayer in this.imageLayers) {
-			renderer.drawImageLayer(framebuffer, imageLayer);
-		}
 	}
 
 	/**
@@ -291,6 +304,36 @@ class TiledMap {
 		}
 
 		return tileset;
+	}
+
+	/**
+	* Set the camera X position
+	* @return camerax position
+	*/
+	function set_camx(newcamx: Int): Int {
+		camx = newcamx;
+		// trace("collisionLayer", collisionLayer);
+		// if (collisionLayer != null) {
+		// 	screenOffsetX = Std.int(Math.min(Math.max(0, camx - width / 2), collisionLayer.getMap().getWidth() * collisionLayer.getMap().getTileset().TILE_WIDTH - width));
+		// 	if (getWidth() < width) screenOffsetX = 0;
+		// }
+		screenOffsetX = camx;
+		return camx;
+	}
+
+	/**
+	* Set the camera Y position
+	* @return cameray position
+	*/
+	function set_camy(newcamy: Int): Int {
+		camy = newcamy;
+		// trace("collisionLayer", collisionLayer);
+		// if (collisionLayer != null) {
+		// 	screenOffsetX = Std.int(Math.min(Math.max(0, camx - width / 2), collisionLayer.getMap().getWidth() * collisionLayer.getMap().getTileset().TILE_WIDTH - width));
+		// 	if (getWidth() < width) screenOffsetX = 0;
+		// }
+		screenOffsetY = camy;
+		return camy;
 	}
 
 	/**

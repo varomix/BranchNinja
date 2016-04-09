@@ -52,13 +52,9 @@ class ImageLayer {
 		var image:TilesetImage = null;
 
 		for(child in xml.elements()) {
-			if(Helper.isValidElement(child)) {
-				if(child.nodeName == "properties") {
-					for(property in child) {
-						if(Helper.isValidElement(property)) {
-							properties.set(property.get("name"), property.get("value"));
-						}
-					}
+			if(child.nodeName == "properties") {
+				for(property in child) {
+					properties.set(property.get("name"), property.get("value"));
 				}
 			}
 
@@ -66,7 +62,6 @@ class ImageLayer {
 				image = new TilesetImage(child.get("source"), child.get("trans"));
 			}
 		}
-
 		return new ImageLayer(tiledMap, name, opacity, visible, properties, image);
 	}
 }

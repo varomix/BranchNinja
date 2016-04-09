@@ -3,6 +3,9 @@
  <tileset firstgid="1" name="mapTiles_colors" tilewidth="36" tileheight="36" tilecount="32">
   <image source="mapTiles_colors.png" width="288" height="144"/>
  </tileset>
+ <imagelayer name="bg">
+  <image source="bg.png"/>
+ </imagelayer>
  <layer name="CYAN" width="64" height="9">
   <properties>
    <property name="tilesheet" value="mapTiles_colors.png"/>

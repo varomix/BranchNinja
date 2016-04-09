@@ -6,6 +6,8 @@ import kha.graphics2.Graphics;
 import kha.math.FastMatrix3;
 import kha.math.Matrix3;
 import kha.math.Vector2;
+import kha.Assets;
+import kha.Framebuffer;
 
 class Scene {
 	private static var instance : Scene;
@@ -259,7 +261,7 @@ class Scene {
 		g.transformation = FastMatrix3.identity();
 		g.color = backgroundColor;
 		g.clear();
-		
+
 		for (i in 0...backgrounds.length) {
 			g.transformation = FastMatrix3.translation(Math.round(-screenOffsetX * backgroundSpeeds[i]), Math.round(-screenOffsetY * backgroundSpeeds[i]));
 			//painter.translate(Math.round(-screenOffsetX * backgroundSpeeds[i]), Math.round(-screenOffsetY * backgroundSpeeds[i]));
@@ -270,7 +272,7 @@ class Scene {
 		//painter.translate(-screenOffsetX, -screenOffsetY);
 		
 		sort(sprites);
-		
+
 		for (z in 0...10) {
 			var i : Int = 0;
 			while (i < sprites.length) {
@@ -289,6 +291,7 @@ class Scene {
 			//painter.translate(Math.round(-screenOffsetX * foregroundSpeeds[i]), Math.round(-screenOffsetY * foregroundSpeeds[i]));
 			foregrounds[i].render(g, Std.int(screenOffsetX * foregroundSpeeds[i]), Std.int(screenOffsetY * foregroundSpeeds[i]), width, height);
 		}
+
 	}
 	
 	public function getWidth() : Float {

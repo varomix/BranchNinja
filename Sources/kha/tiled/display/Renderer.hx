@@ -1,5 +1,6 @@
 package kha.tiled.display;
 import kha.Framebuffer;
+import kha.graphics2.Graphics;
 
 interface Renderer {
 	public function setTiledMap(map:TiledMap):Void;

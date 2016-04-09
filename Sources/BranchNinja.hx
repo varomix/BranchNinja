@@ -13,11 +13,10 @@ import kha.tiled.display.KhaRenderer;
 import kha2d.Direction;
 
 import kha2d.Scene;
-import kha2d.Tilemap;
+// import kha2d.Tilemap;
 import kha2d.Scene;
 
 import kha.tiled.TiledMap;
-
 
 class BranchNinja {
 
@@ -37,7 +36,9 @@ class BranchNinja {
 	private function create()
 	{
 		// MAP LOADING
-		map = TiledMap.fromAssets(Assets.blobs.testMap_tmx.toString());
+		// map = TiledMap.fromAssets(Assets.blobs.testMap_tmx.toString());
+		var renderer = new KhaRenderer();
+		map = new TiledMap(Assets.blobs.testMap_tmx.toString(), renderer);
 
 		// entities
 		player = new Player();
@@ -64,22 +65,25 @@ class BranchNinja {
 		Scene.the.addProjectile(new Shuriken(0, 10)); 
 	}
 
-	function update(): Void {
+	function update(): Void 
+	{
 		Scene.the.update();	
+		
 	}
 
 	function render(framebuffer: Framebuffer): Void {
-		map.render(framebuffer);
-		
+		if(this.map == null) return;
+		this.map.camx -= 2;
+		this.map.camy = 16;	
 		var g = framebuffer.g2;
 		g.begin();
-		g.color = Color.White;
-		// g.drawImage(Assets.images.bg, 0 ,0);
-		// g.drawImage(Assets.images.testMap, -300 ,16);
+		this.map.render(framebuffer);
 		Scene.the.render(g);
 
+		// g.drawImage(Assets.images.bg, 0 ,0);
 		g.end();
 
+// 
 	}
 
 	// shot

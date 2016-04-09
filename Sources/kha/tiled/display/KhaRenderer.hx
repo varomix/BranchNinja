@@ -4,6 +4,7 @@ import kha2d.Rectangle;
 import kha.tiled.Layer;
 import kha.tiled.TiledMap;
 import kha.tiled.Tileset;
+import kha.graphics2.Graphics;
 
 /**
  * ...
@@ -27,7 +28,6 @@ class KhaRenderer implements Renderer
 	public function drawLayer(framebuffer:Framebuffer, layer:Layer):Void
 	{
 		var gidCounter:Int = 0;
-		
 		if (layer.visible) {
 			for (y in 0...map.heightInTiles) {
 				for (x in 0...map.widthInTiles) {
@@ -40,8 +40,8 @@ class KhaRenderer implements Renderer
 
 						switch (map.orientation) {
 							case TiledMapOrientation.Orthogonal:
-								destx = x * map.tileWidth;
-								desty = y * map.tileHeight;
+								destx = (x * map.tileWidth) + map.screenOffsetX;
+								desty = (y * map.tileHeight) + map.screenOffsetY;
 							case TiledMapOrientation.Isometric:
 								destx = (map.totalWidth + x - y - 1) * map.tileWidth * 0.5; //TODO: test
 								desty = (y + x) * map.tileHeight * 0.5;
