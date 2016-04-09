@@ -1,26 +1,6 @@
-// Copyright (C) 2013 Christopher "Kasoki" Kaster
-//
-// This file is part of "openfl-tiled". <http://github.com/Kasoki/openfl-tiled>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
 package kha.tiled;
 
+import haxe.xml.Fast;
 import kha.math.Vector2;
 import kha2d.Rectangle;
 
@@ -98,16 +78,16 @@ class Tileset {
 		var terrainTypes:Array<TerrainType> = new Array<TerrainType>();
 		var image:TilesetImage = null;
 
+		
+
 		var tileOffsetX:Int = 0;
 		var tileOffsetY:Int = 0;
+		
 
 		for (child in xml.elements()) {
-			if(Helper.isValidElement(child)) {
 				if (child.nodeName == "properties") {
 					for (property in child) {
-						if (Helper.isValidElement(property)) {
 							properties.set(property.get("name"), property.get("value"));
-						}
 					}
 				}
 
@@ -115,18 +95,14 @@ class Tileset {
 					tileOffsetX = Std.parseInt(child.get("x"));
 					tileOffsetY = Std.parseInt(child.get("y"));
 				}
-
 				if (child.nodeName == "image") {
 					image = new TilesetImage(child.get("source"), child.get("trans"));
 				}
 
 				if (child.nodeName == "terraintypes") {
 					for (element in child) {
-
-						if(Helper.isValidElement(element)) {
-							if(element.nodeName == "terrain") {
-								terrainTypes.push(new TerrainType(element.get("name"), Std.parseInt(element.get("tile"))));
-							}
+						if(element.nodeName == "terrain") {
+							terrainTypes.push(new TerrainType(element.get("name"), Std.parseInt(element.get("tile"))));
 						}
 					}
 				}
@@ -136,23 +112,16 @@ class Tileset {
 					var properties:Map<String, String> = new Map<String, String>();
 
 					for (element in child) {
-
-						if(Helper.isValidElement(element)) {
-							if (element.nodeName == "properties") {
-								for (property in element) {
-									if (!Helper.isValidElement(property)) {
-										continue;
-									}
-
-									properties.set(property.get("name"), property.get("value"));
-								}
+						if (element.nodeName == "properties") {
+							for (property in element) {
+								properties.set(property.get("name"), property.get("value"));
 							}
 						}
 					}
 
 					propertyTiles.set(id, new PropertyTile(id, properties));
 				}
-			}
+			
 		}
 
 		return new Tileset(tiledMap, name, tileWidth, tileHeight, spacing, properties, terrainTypes,

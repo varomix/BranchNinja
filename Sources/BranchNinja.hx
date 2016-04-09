@@ -16,10 +16,7 @@ import kha2d.Scene;
 import kha2d.Tilemap;
 import kha2d.Scene;
 
-import kha.tiled.display.Renderer;
 import kha.tiled.TiledMap;
-
-// import tmx.TiledMap;
 
 
 class BranchNinja {
@@ -28,27 +25,19 @@ class BranchNinja {
 	public var bug:Bug;
 
 	public var map:TiledMap;
-	// public var level:TiledLevel;
+
 
 	public function new() {
-		Assets.loadEverything(create);
 		System.notifyOnRender(render);
 		Scheduler.addTimeTask(update, 0, 1 / 60);
+		Assets.loadEverything(create);
 
 	}
 
 	private function create()
 	{
 		// MAP LOADING
-		
-		var world = Assets.blobs.testMap_tmx;
-
-		map = TiledMap.fromAssets(world.toString());
-
-		// level = new TiledLevel(Assets.blobs.testMap_tmx.toString(), this);
-
-
-
+		map = TiledMap.fromAssets(Assets.blobs.testMap_tmx.toString());
 
 		// entities
 		player = new Player();
@@ -80,13 +69,14 @@ class BranchNinja {
 	}
 
 	function render(framebuffer: Framebuffer): Void {
+		map.render(framebuffer);
+		
 		var g = framebuffer.g2;
 		g.begin();
 		g.color = Color.White;
 		// g.drawImage(Assets.images.bg, 0 ,0);
 		// g.drawImage(Assets.images.testMap, -300 ,16);
 		Scene.the.render(g);
-		map.render(framebuffer);
 
 		g.end();
 

@@ -50,8 +50,8 @@ class Helper {
 			assetLoader = new DefaultAssetLoader();
 		}
 
-		// return assetLoader.getText(assetPath);
-		return assetPath;
+		return assetLoader.getText(assetPath);
+		// return assetPath;
 	}
 
 	/** This methods is wrapper for Assets.getBitmapData(string), if

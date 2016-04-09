@@ -27,8 +27,6 @@ class KhaRenderer implements Renderer
 	public function drawLayer(framebuffer:Framebuffer, layer:Layer):Void
 	{
 		var gidCounter:Int = 0;
-
-		trace(layer.tiles);
 		
 		if (layer.visible) {
 			for (y in 0...map.heightInTiles) {

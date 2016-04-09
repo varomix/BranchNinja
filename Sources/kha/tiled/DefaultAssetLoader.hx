@@ -22,7 +22,7 @@
 package kha.tiled;
 
 import kha.Image;
-
+import kha.Blob;
 import kha.Assets;
 
 /**
@@ -36,15 +36,13 @@ class DefaultAssetLoader implements AssetLoader{
 
 	/** Default Kha way to load text */
 	public function getText(assetPath:String):String {
-		trace("getText", Reflect.field(Assets.blobs, assetPath));
-		// return "hi"; // Loader.the.getBlob(assetPath).toString();
-		return cast(Reflect.field(Assets.blobs, assetPath), Blob).toString();
+		return assetPath;
 	}
 
 	/** Default Kha way to load images */
-	public function getImage(assetPath:String) : Image {
-		return Reflect.field(Assets.blobs, assetPath);
-		// return Loader.the.getImage(assetPath);
+	public function getImage(image:String) : Image {
+		image = image.split(".")[0]; // strip extension
+		return Reflect.field(Assets.images, image);
 	}
 
 }

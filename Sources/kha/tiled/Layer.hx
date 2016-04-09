@@ -47,6 +47,7 @@ class Layer {
 
 	/** The parent TiledMap */
 	public var parent(default, null):TiledMap;
+	
 
 	private function new(parent:TiledMap, name:String, width:Int, height:Int,
 			opacity:Float, visible:Bool, tiles:Array<Int>) {
@@ -58,7 +59,6 @@ class Layer {
 		this.visible = visible;
 
 		this.tiles = new Array<Tile>();
-
 		for(gid in tiles) {
 			this.tiles.push(Tile.fromGID(gid, this));
 		}
@@ -82,39 +82,36 @@ class Layer {
 
 		var tileGIDs:Array<Int> = new Array<Int>();
 
-		for (child in xml) {
-			if(Helper.isValidElement(child)) {
-				if (child.nodeName == "data") {
-					var encoding:String = "";
-					if (child.exists("encoding")){
-						encoding = child.get("encoding");
-					}
-					var chunk:String = "";
-					switch(encoding){
-						case "base64":
-							/*chunk = child.firstChild().nodeValue;
-							var compressed:Bool = false;
-							if (child.exists("compression")){
-								switch(child.get("compression")){
-									case "zlib":
-										compressed = true;
-									default:
-										throw "TiledMap: data compression type not supported!";
-								}
+		for (child in xml.elements()) {
+
+			if (child.nodeName == "data") {
+				var encoding:String = "";
+				if (child.exists("encoding")){
+					encoding = child.get("encoding");
+				}
+				var chunk:String = "";
+				switch(encoding){
+					case "base64":
+						/*chunk = child.firstChild().nodeValue;
+						var compressed:Bool = false;
+						if (child.exists("compression")){
+							switch(child.get("compression")){
+								case "zlib":
+									compressed = true;
+								default:
+									throw "TiledMap: data compression type not supported!";
 							}
-							tileGIDs = base64ToArray(chunk, width, compressed);*/
-							throw "kha-tiled: base64 not supported at the moment";
-						case "csv":
-							chunk = child.firstChild().nodeValue;
-							tileGIDs = csvToArray(chunk);
-						default:
-							for (tile in child) {
-								if (Helper.isValidElement(tile)) {
-									var gid = Std.parseInt(tile.get("gid"));
-									tileGIDs.push(gid);
-								}
-							}
-					}
+						}
+						tileGIDs = base64ToArray(chunk, width, compressed);*/
+						throw "kha-tiled: base64 not supported at the moment";
+					case "csv":
+						chunk = child.firstChild().nodeValue;
+						tileGIDs = csvToArray(chunk);
+					default:
+						for (tile in child) {
+							var gid = Std.parseInt(tile.get("gid"));
+							tileGIDs.push(gid);
+						}
 				}
 			}
 		}

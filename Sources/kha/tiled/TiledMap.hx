@@ -1,5 +1,6 @@
 package kha.tiled;
 
+import haxe.xml.Fast;
 import kha.Framebuffer;
 import kha.tiled.display.KhaRenderer;
 
@@ -12,6 +13,11 @@ import kha.tiled.display.Renderer;
  * @author Christopher Kaster
  */
 class TiledMap {
+
+	public var version:String;
+	public var bgColor:Color;
+	public var fullWidth:Int;
+	public var fullHeight:Int;
 
 	/** The path of the map file */
 	public var path(default, null):String;
@@ -64,11 +70,105 @@ class TiledMap {
 
 		var xml = Helper.getText(path);
 
-		parseXML(xml);
+		// parseXML(xml);
+
+		var source:Fast = null;
+		var node:Fast = null;
+
+		// string data
+		source = new Fast(Xml.parse(xml));
+		source = source.node.map;
+
+		// load tmx stuff in chunks
+		loadAttributes(source);
+		loadProperties(source);
+		loadTilesets(source);
+		loadLayers(source);
+
 
 		this.renderer = renderer;
 
 		renderer.setTiledMap(this);
+	}
+
+	public function loadAttributes(source:Fast):Void
+	{
+		widthInTiles = Std.parseInt(source.att.width);
+		heightInTiles = Std.parseInt(source.att.height);
+
+	 	version = (source.att.version != null) ? source.att.version : "unknown";
+		orientation = (source.att.orientation != null) ? TiledMapOrientation.Orthogonal : TiledMapOrientation.Isometric;
+		bgColor = (source.has.backgroundcolor && source.att.backgroundcolor != null) ? Color.fromString(source.att.backgroundcolor) : null;
+		tileWidth = Std.parseInt(source.att.tilewidth);
+		tileHeight = Std.parseInt(source.att.tileheight);
+		
+		totalWidth = Std.parseInt(source.att.width);
+		totalHeight = Std.parseInt(source.att.height);
+		// // Calculate the entire size
+		fullWidth = widthInTiles * tileWidth;
+		fullHeight = heightInTiles * tileHeight;
+	}
+
+	private function loadProperties(source:Fast):Void
+	{
+		this.properties = new Map<String, String>();
+		for(child in source.elements)
+		{
+			if(child.name == "layer")
+			{
+				properties.set(child.node.properties.node.property.att.name, child.node.properties.node.property.att.value);
+			}
+		}
+	}
+
+	private function loadTilesets(source:Fast):Void
+	{
+		this.tilesets = new Array<Tileset>();
+		for(child in source.elements)
+		{
+			var tileset:Tileset = null;
+			if (child.name == "tileset")
+			{
+				// trace(child.x.toString()); // get XML from FAST
+				tileset = Tileset.fromGenericXml(this, child.x.toString());
+				tileset.setFirstGID(Std.parseInt(child.att.firstgid));
+
+				this.tilesets.push(tileset);
+			}
+		}
+	}
+	
+	public function loadLayers(source:Fast):Void
+	{
+		// LAYERS
+		this.layers = new Array<Layer>();
+		for(child in source.elements)
+		{
+			if (child.name == "layer")
+			{
+				var layer:Layer = Layer.fromGenericXml(child.x, this);
+
+				this.layers.push(layer);
+			}
+
+			// OBJECT GROUPS
+			this.objectGroups = new Array<TiledObjectGroup>();
+			if (child.name == "objectgroup")
+			{
+				var objectGroup = TiledObjectGroup.fromGenericXml(child.x);
+
+				this.objectGroups.push(objectGroup);
+			}
+
+			// IMAGE LAYERS
+			this.imageLayers = new Array<ImageLayer>();
+			if (child.name == "objectgroup")
+			{
+				var imageLayer = ImageLayer.fromGenericXml(this, child.x);
+
+				this.imageLayers.push(imageLayer);
+			}
+		}
 	}
 
 	public function render(framebuffer:Framebuffer) {
@@ -150,7 +250,6 @@ class TiledMap {
 
 					tileset.setFirstGID(Std.parseInt(child.get("firstgid")));
 
-					// trace(tileset);
 					this.tilesets.push(tileset);
 				} else if (child.nodeName == "properties") {
 					for (property in child) {
@@ -173,7 +272,6 @@ class TiledMap {
 				}
 			// }
 
-			// trace("tileset", this.tilesets);
 		}
 
 	}
@@ -188,6 +286,7 @@ class TiledMap {
 		for(t in this.tilesets) {
 			if(gid >= t.firstGID) {
 				tileset = t;
+
 			}
 		}
 
@@ -199,6 +298,8 @@ class TiledMap {
 	 * @return Map width in pixels
 	 */
 	private function get_totalWidth():Int {
+		trace("doing calculations");
+		trace(this.widthInTiles);
 		return this.widthInTiles * this.tileWidth;
 	}
 
