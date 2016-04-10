@@ -70,11 +70,10 @@ class TiledObjectGroup {
 		var properties:Map<String, String> = new Map<String, String>();
 		var objects:Array<Xml> = new Array<Xml>();
 
-		for (child in xml) {
-			if (Helper.isValidElement(child)) {
+		for (child in xml.elements()) {
 				if (child.nodeName == "properties") {
 					for (property in child) {
-						if (Helper.isValidElement(property)) {
+						if (property.exists("name")) {
 							properties.set(property.get("name"), property.get("value"));
 						}
 					}
@@ -83,7 +82,7 @@ class TiledObjectGroup {
 				if (child.nodeName == "object") {
 					objects.push(child);
 				}
-			}
+			
 		}
 
 		return new TiledObjectGroup(name, color, width, height, properties, objects);

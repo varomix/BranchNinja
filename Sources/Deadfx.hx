@@ -5,7 +5,7 @@ import kha2d.Animation;
 import kha2d.Scene;
 import kha2d.Sprite;
 
-class Explosion extends Sprite {
+class Deadfx extends Sprite {
 	// SETUP ANIMATIONS
 	public var explode:Animation;
 	public var count:Int;
@@ -14,18 +14,18 @@ class Explosion extends Sprite {
 	public function new(x:Float, y:Float)
 	{
 		// we use super to import the image
-		super(Assets.images.effects, 36, 36, 0);
+		super(Assets.images.dieExplosion, 150, 150, 2);
 		this.x = x;
 		this.y = y;
 		accy = 0;
 
 		// animation frames
-		explode = Animation.createRange(0, 5, 4);
+		explode = Animation.createRange(0, 7, 4);
 
 		// set initial anim
 		setAnimation(explode);
 
-		count = 4 * 5;
+		count = 4 * 6;
 	}
 
 	override public function update():Void {

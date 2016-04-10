@@ -96,6 +96,9 @@ class TiledMap {
 		loadTilesets(source);
 		loadLayers(source);
 
+		// TODO : // use this to export to kha2D tilemap
+		// trace(this.layers[1].tiles[1].gid);
+
 		//set camera to 0
 		camx = 0;
 		camy = 0;
@@ -126,12 +129,12 @@ class TiledMap {
 
 	private function loadProperties(source:Fast):Void
 	{
-		
 		for(child in source.elements)
 		{
 			if(child.name == "layer")
 			{
-				properties.set(child.node.properties.node.property.att.name, child.node.properties.node.property.att.value);
+				if(child.hasNode.properties)
+					properties.set(child.node.properties.node.property.att.name, child.node.properties.node.property.att.value);
 			}
 		}
 	}
@@ -159,9 +162,8 @@ class TiledMap {
 		for(child in source.elements)
 		{
 			if (child.name == "layer")
-			{
+			{	
 				var layer:Layer = Layer.fromGenericXml(child.x, this);
-
 				this.layers.push(layer);
 			}
 
@@ -184,7 +186,7 @@ class TiledMap {
 	}
 
 	public function render(framebuffer:Framebuffer) {
-		renderer.clear(framebuffer);
+		// renderer.clear(framebuffer);
 					
 		for(imageLayer in this.imageLayers) {
 			renderer.drawImageLayer(framebuffer, imageLayer);

@@ -68,7 +68,6 @@ class TiledObject {
 			properties:Map<String, String>) {
 		this.parent = parent;
 		this.gid = gid;
-		trace(this.gid);
 		this.name = name;
 		this.type = type;
 		this.x = x;

@@ -47,6 +47,9 @@ class Layer {
 
 	/** The parent TiledMap */
 	public var parent(default, null):TiledMap;
+
+	/** get the tileGIDs **/
+	// public var tileGIDs(default, null):Array<Int>;
 	
 
 	private function new(parent:TiledMap, name:String, width:Int, height:Int,
@@ -80,7 +83,7 @@ class Layer {
 			true : Std.parseInt(xml.get("visible")) == 1 ?
 				true : false;
 
-		var tileGIDs:Array<Int> = new Array<Int>();
+		var tileGIDs = new Array<Int>();
 
 		for (child in xml.elements()) {
 
@@ -180,6 +183,7 @@ class Layer {
 		}
 		return result;
 	}
+
 
 
 	/*private static function base64ToArray(chunk:String, lineWidth:Int, compressed:Bool):Array<Int>{

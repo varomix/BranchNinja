@@ -5,9 +5,9 @@ import kha2d.Animation;
 import kha2d.Scene;
 import kha2d.Sprite;
 
-class Explosion extends Sprite {
+class Hitfx extends Sprite {
 	// SETUP ANIMATIONS
-	public var explode:Animation;
+	public var hitfx:Animation;
 	public var count:Int;
 
 
@@ -18,12 +18,13 @@ class Explosion extends Sprite {
 		this.x = x;
 		this.y = y;
 		accy = 0;
+		z = 3;
 
 		// animation frames
-		explode = Animation.createRange(0, 5, 4);
+		hitfx = Animation.createRange(6, 11, 4);
 
 		// set initial anim
-		setAnimation(explode);
+		setAnimation(hitfx);
 
 		count = 4 * 5;
 	}

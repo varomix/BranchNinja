@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="6" height="4" tilewidth="36" tileheight="36" nextobjectid="3">
+ <tileset firstgid="1" name="mapTiles_colors" tilewidth="36" tileheight="36" tilecount="32">
+  <image source="mapTiles_colors.png" width="288" height="144"/>
+ </tileset>
+ <layer name="redmap" width="6" height="4">
+  <data encoding="csv">
+1,1,1,2,1,1,
+9,10,9,9,9,9,
+17,17,17,17,17,18,
+25,25,26,25,25,25
+</data>
+ </layer>
+ <objectgroup name="collisions">
+  <object id="1" name="collider" x="44" y="1" width="106" height="142"/>
+ </objectgroup>
+</map>

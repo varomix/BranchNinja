@@ -9,3 +9,12 @@ make branches, maybe tiled map? :) maybe random generation
 
 
 Scheduler.addTimeTask(dowhatever, 2)
+
+on void areas bounce player back to last position if life still left and decrese life
+
+add hazards, spikes
+
+add score
+
+make super mega large map level
+or make different levels
