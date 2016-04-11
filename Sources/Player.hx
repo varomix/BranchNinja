@@ -20,6 +20,7 @@ class Player extends Sprite {
 	public var shoot:Animation;
 	public var hitAnim:Animation;
 	private static var alive:Bool;
+	private static var commits:Int;
 
 
 	public function new()
@@ -39,6 +40,8 @@ class Player extends Sprite {
 		alive = true;
 		invincibility = false;
 		visible = true;
+
+		commits = 0;
 
 		// set initial anim
 		setAnimation(walk);
@@ -83,7 +86,6 @@ class Player extends Sprite {
 			Scene.the.addOther(new Hitfx(this.x, this.y));
 			Scheduler.addTimeTask(invincible, 1);
 			health -= 25;
-			trace("Health: ", health);
 		}
 
 		if(Std.is(sprite, Collider)){
@@ -99,6 +101,7 @@ class Player extends Sprite {
 		if(Std.is(sprite, Kraken)){
 			Scene.the.addProjectile(new Pickupfx(sprite.x-12, sprite.y - 8));
 			Scene.the.removeOther(sprite);
+			commits++;
 		}
 
 	}
@@ -111,6 +114,11 @@ class Player extends Sprite {
 	public static function get_alive():Bool
 	{
 	    return alive;
+	}
+
+	public static function get_commits():Int
+	{
+	    return commits;
 	}
 
 	public static function get_health():Int

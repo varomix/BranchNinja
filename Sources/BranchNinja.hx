@@ -1,23 +1,19 @@
 package;
 
-import haxe.xml.Fast;
+import kha.Assets;
 import kha.Framebuffer;
+import kha.Key;
 import kha.Scheduler;
 import kha.System;
-import kha.Assets;
-import kha.math.Vector2;
-import kha.Color;
-import kha.Key;
+import kha.input.Mouse;
 import kha.input.Keyboard;
-import kha.tiled.display.KhaRenderer;
+import kha.tiled.TiledMap;
 import kha2d.Direction;
-
-import kha2d.Scene;
-import kha2d.Tilemap;
 import kha2d.Scene;
 import kha2d.Sprite;
-
-import kha.tiled.TiledMap;
+import kha.Font;
+import kha.Color;
+import kha.tiled.TiledObjectGroup;
 
 class BranchNinja {
 
@@ -25,11 +21,16 @@ class BranchNinja {
 	public var bug:Bug;
 
 	public var map:TiledMap;
-	public var worldSpeed:Int = 2;
+	public var worldSpeed:Int;
+	public var bitfont:Font;
+	public var health:Health;
 
 	var collider:Sprite;
+	public var col:TiledObjectGroup;
+	public var kraks:TiledObjectGroup;
 
 	public function new() {
+
 		System.notifyOnRender(render);
 		Scheduler.addTimeTask(update, 0, 1 / 60);
 		Assets.loadEverything(create);
@@ -38,12 +39,12 @@ class BranchNinja {
 
 	private function create()
 	{
+		worldSpeed = 2;
+		bitfont = Assets.fonts.bitlow;
 
 		// CREATE GUI
-		var health = new Health(System.windowWidth() / 2, 4);
+		health = new Health(44, -2);
 		Scene.the.addOther(health);
-
-
 
 		// MAP LOADING
 		// map = TiledMap.fromAssets(Assets.blobs.test01_tmx.toString());
@@ -54,7 +55,7 @@ class BranchNinja {
 
 
 		// build the Kha2D map
-		var backmap = new Array<Array<Int>>();
+		// var backmap = new Array<Array<Int>>();
 
 		// for (y in 0...map.heightInTiles) for (x in 0...map.widthInTiles) {backmap[x][y] = this.map.layers[0].tiles[x].gid; }
 
@@ -75,16 +76,17 @@ class BranchNinja {
 		bug.x = 450;
 		bug.y = 36;
 
+		Reg.totalbugs = 300;
+
 		Scene.the.setColissionMap(null);
 
-		var col = map.getObjectGroupByName("collisions");
+		col = map.getObjectGroupByName("collisions");
 		for(obj in col)
 		{
 			Scene.the.addEnemy(new Collider(obj.x, obj.y, obj.width, obj.height));
 		}
 
-		var kraks = map.getObjectGroupByName("krakens");
-		trace(kraks.objects.length);
+		kraks = map.getObjectGroupByName("krakens");
 		for (krk in kraks) {
 			Scene.the.addOther(new Kraken(krk.x, krk.y));
 		}
@@ -94,10 +96,8 @@ class BranchNinja {
 		Scene.the.addHero(player);
 		Scene.the.addEnemy(bug);
 
-
-		
 		if (Keyboard.get() != null) Keyboard.get().notify(keyDown, null);
-
+		if (Mouse.get() != null) Mouse.get().notify(onMouseDown, null, null, null);
 
 	}
 
@@ -110,30 +110,44 @@ class BranchNinja {
 	{
 		Scene.the.update();
 
-		
-	}
-
-	function render(framebuffer: Framebuffer): Void {
-		if(this.map == null) return;
 		if(Player.get_alive())
 		{
 			this.map.camx -= worldSpeed;
 			this.map.camy = 16;
 		}
+		
+	}
 
-		// collider.x -= worldSpeed;
-		
-		
+	function render(framebuffer: Framebuffer): Void {
+		if(this.map == null) return;
+
 		var g = framebuffer.g2;
 		g.begin();
+		g.color = Color.White;
 		this.map.render(framebuffer);
+
+		// DRAW HUD
+		g.drawImage(Assets.images.blackFace, 0,0);
+		g.font = bitfont;
+		g.fontSize = 24;
+		g.drawString("COMMITS:", 90, 5);
+		g.drawString("BUGS:", 340, 5);
+		g.color = Color.Pink;
+		g.drawString(Std.string(Player.get_commits()), 205, 5);
+		g.drawString(Std.string(Reg.totalbugs), 415, 5);
+
+		// DRAW PLAY AGAIN
+		if (!Player.get_alive()) {
+			g.color = Color.Black;
+			g.fillRect(0, 145, System.windowWidth(), 65);
+			g.fontSize = 50;
+			g.color = Color.Magenta;
+			g.drawString("CLICK TO TRY AGAIN", 30, System.windowHeight() / 2 - 10);
+		}
+		// render scene on top
 		Scene.the.render(g);
-
-		g.drawImage(Assets.images.blackFace, 576-38,0);
-
 		g.end();
 
-// 
 	}
 
 	// shot
@@ -146,7 +160,25 @@ class BranchNinja {
 			Player.getInstance().move(Direction.DOWN);
 		case CTRL:
 			Player.getInstance().shot();
+		case ENTER:
+			trace("enter again");
 		default:
+		}
+	}
+
+	public function onMouseDown(button:Int, x:Int, y:Int):Void {
+		if (button == 0){
+			if(Player.get_alive() == false){
+				// new Reset();
+				player = null;
+				bug.x = 0;
+				bug = null;
+				Scene.the.clear();
+				health = null;
+				map = null;
+				Keyboard.get().notify(null, null);
+				new BranchNinja();
+			}
 		}
 	}
 }

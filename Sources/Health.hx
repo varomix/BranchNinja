@@ -21,7 +21,7 @@ class Health extends Sprite {
 		this.y = y;
 
 		accy = 0;
-		z = 5;
+		z = 4;
 
 		// animation frames
 		full = Animation.create(0);

@@ -18,3 +18,19 @@ add score
 
 make super mega large map level
 or make different levels
+
+
+public function new() {
+  init();
+}
+function init() {
+  score = 0;
+  player = new Player();
+  enemy = new Enemy();
+}
+function onKeyUp(int key) {
+  switch (key) {
+    case Key.R:
+ if (!player.alive) init();
+  }
+}

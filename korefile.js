@@ -6,7 +6,7 @@ project.addSubProject(Solution.createProject('build/linux-build'));
 project.addSubProject(Solution.createProject('/home/varomix/dev/Kha'));
 project.addSubProject(Solution.createProject('/home/varomix/dev/Kha/Kore'));
 solution.addProject(project);
-if (fs.existsSync(path.join('/usr/lib/haxelib/kha2d', 'korefile.js'))) {
-	project.addSubProject(Solution.createProject('/usr/lib/haxelib/kha2d'));
+if (fs.existsSync(path.join('Libraries/Kha2D', 'korefile.js'))) {
+	project.addSubProject(Solution.createProject('Libraries/Kha2D'));
 }
 return solution;

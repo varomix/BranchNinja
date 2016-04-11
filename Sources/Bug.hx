@@ -9,7 +9,6 @@ class Bug extends Sprite {
 	// SETUP ANIMATIONS
 	public var walk:Animation;
 
-
 	public function new()
 	{
 		// we use super to import the image
@@ -21,15 +20,16 @@ class Bug extends Sprite {
 		accy = 0;
 		speedx = -3;
 
-
 		// set initial anim
 		setAnimation(walk);
 	}
 
 	public function hitWithShot():Void
 	{
+		Reg.totalbugs--;
 		Scene.the.removeEnemy(this);
 		Scene.the.addProjectile(new Explosion(this.x, this.y));
+
 	}
 	
 }
