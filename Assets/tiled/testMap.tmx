@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="64" height="9" tilewidth="36" tileheight="36" nextobjectid="16">
- <tileset firstgid="1" name="mapTiles_colors" tilewidth="36" tileheight="36" tilecount="32">
-  <image source="mapTiles_colors.png" width="288" height="144"/>
+ <tileset firstgid="1" name="mapTiles_colors" tilewidth="36" tileheight="36" tilecount="40">
+  <image source="mapTiles_colors.png" width="288" height="180"/>
  </tileset>
  <imagelayer name="bg">
   <image source="bg.png"/>
  </imagelayer>
+ <layer name="spikes" width="64" height="9">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,33,34,34,34,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,33,34,34,34,34,34,34,34,34,34,34,35,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,33,34,34,34,34,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,34,35,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,33,34,34,34,34,34,34,34,34,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
  <layer name="CYAN" width="64" height="9">
   <properties>
    <property name="tilesheet" value="mapTiles_colors.png"/>
@@ -71,12 +84,12 @@
 </data>
  </layer>
  <objectgroup name="collisions">
-  <object id="1" name="die" x="480" y="97.5" width="141.333" height="50"/>
-  <object id="4" name="die" x="767.333" y="156.667" width="179.167" height="50"/>
-  <object id="5" name="die" x="1164.42" y="229.667" width="320.583" height="50"/>
-  <object id="6" name="die" x="1762.67" y="173" width="48" height="43.3333"/>
-  <object id="7" name="die" x="1883.75" y="87" width="395.583" height="50"/>
-  <object id="8" name="die" x="2274" y="76" width="32.6667" height="192.667"/>
+  <object id="1" name="die" x="486.667" y="97.5" width="134.666" height="50"/>
+  <object id="4" name="die" x="774.667" y="156.667" width="171.833" height="50"/>
+  <object id="5" name="die" x="1170" y="229.667" width="315.003" height="50"/>
+  <object id="6" name="die" x="1768.67" y="173" width="42.0033" height="43.3333"/>
+  <object id="7" name="die" x="1889.33" y="87" width="390" height="50"/>
+  <object id="8" name="die" x="2278.67" y="76" width="28" height="192.667"/>
  </objectgroup>
  <objectgroup name="krakens">
   <object id="12" name="kraken" x="291" y="43" width="30" height="23"/>
