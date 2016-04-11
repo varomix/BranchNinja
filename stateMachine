@@ -1,0 +1,66 @@
+class MyGame {
+    static public var game : Game;
+    
+    static function main() {
+        game = new Game();
+        
+        for (i in 0...10) {
+            game.update();
+            game.render();
+        }
+        
+        game.switchState(new PlayState());
+        
+        for (i in 0...10) {
+            game.update();
+        	game.render();
+        }
+    }
+}
+
+class Game {
+    public var state : State;
+    
+    public function new() {
+        state = new MenuState();
+        state.create();
+    }
+    
+    public function update() {
+        state.update();
+    }
+    
+    public function render() {
+        state.render();
+    }
+    
+    public function switchState(state : State) {
+        this.state.destroy();
+        this.state = state;
+        this.state.create();
+    }
+}
+
+class State {
+    public function new() {}
+    public function create() {}
+    public function destroy() {}
+    public function update() {}
+    public function render() {}
+}
+
+class MenuState extends State {
+    public function new() { super(); }
+    override public function create() { super.create(); trace("Creating Menu State"); }
+    override public function destroy() { super.destroy(); trace("Destroying Menu State"); }
+    override public function update() { super.update(); trace("Updating Menu State"); }
+    override public function render() { super.render(); trace("Rendering Menu State"); }
+}
+
+class PlayState extends State {
+    public function new() { super(); }
+    override public function create() { super.create(); trace("Creating Play State"); }
+    override public function destroy() { super.destroy(); trace("Destroying Play State"); }
+    override public function update() { super.update(); trace("Updating Play State"); }
+    override public function render() { super.render(); trace("Rendering Play State"); }
+}

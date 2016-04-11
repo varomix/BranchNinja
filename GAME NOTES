@@ -34,3 +34,6 @@ function onKeyUp(int key) {
  if (!player.alive) init();
   }
 }
+
+
+http://try.haxe.org/#eA25c
