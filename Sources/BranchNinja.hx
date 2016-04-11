@@ -15,7 +15,7 @@ import kha.Font;
 import kha.Color;
 import kha.tiled.TiledObjectGroup;
 
-class BranchNinja {
+class BranchNinja extends State {
 
 	public var player:Player;
 	public var bug:Bug;
@@ -30,15 +30,17 @@ class BranchNinja {
 	public var kraks:TiledObjectGroup;
 
 	public function new() {
+		super(); 
 
-		System.notifyOnRender(render);
-		Scheduler.addTimeTask(update, 0, 1 / 60);
+		// System.notifyOnRender(render);
+		// Scheduler.addTimeTask(update, 0, 1 / 60);
 		Assets.loadEverything(create);
 
 	}
 
-	private function create()
+	override public function create()
 	{
+		// super.create();
 		worldSpeed = 2;
 		bitfont = Assets.fonts.bitlow;
 
@@ -101,12 +103,25 @@ class BranchNinja {
 
 	}
 
+	public function resetGame()
+	{
+		this.map.camx = 0;
+		player.x = player.y = 36 + 72;
+	    bug.x = 450;
+		bug.y = 36;
+		Reg.totalbugs = 300;
+		player.set_health(100);
+		player.set_alive(true);
+		player.visible = true;
+		Scene.the.removeOther(Diefx.getInstance());
+	}
+
 	public function shot():Void
 	{
 		Scene.the.addProjectile(new Shuriken(0, 10)); 
 	}
 
-	function update(): Void 
+	override public function update(): Void 
 	{
 		Scene.the.update();
 
@@ -118,7 +133,9 @@ class BranchNinja {
 		
 	}
 
-	function render(framebuffer: Framebuffer): Void {
+	override public function render(framebuffer: Framebuffer): Void {
+		super.render(framebuffer);
+
 		if(this.map == null) return;
 
 		var g = framebuffer.g2;
@@ -150,6 +167,20 @@ class BranchNinja {
 
 	}
 
+	override public function destroy()
+	{
+	    super.destroy();
+	    trace("DESTROY BRANCHNINJA");
+	    Scene.the.clear();
+	    player = null;
+	    bug = null;
+	    map = null;
+
+	   	Keyboard.get().remove(keyDown, null);
+		Mouse.get().remove(onMouseDown, null, null, null);
+
+	}
+
 	// shot
 	private function keyDown(key: Key, char: String): Void {
 		if (Player.getInstance() == null) return;
@@ -169,15 +200,8 @@ class BranchNinja {
 	public function onMouseDown(button:Int, x:Int, y:Int):Void {
 		if (button == 0){
 			if(Player.get_alive() == false){
-				// new Reset();
-				player = null;
-				bug.x = 0;
-				bug = null;
-				Scene.the.clear();
-				health = null;
-				map = null;
-				Keyboard.get().notify(null, null);
-				new BranchNinja();
+				Game.switchState(new BranchNinja());
+				// resetGame();
 			}
 		}
 	}

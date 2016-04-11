@@ -1,10 +1,20 @@
 package;
 
-class Reset {
+class Reset  extends State {
 	
 	public function new():Void
 	{
-	    var game = new BranchNinja();
+		super();
 	    
+	}
+
+	override public function create()
+	{
+	    super.create();
+	    trace("Creating RESET State");
+
+	    Game.switchState(new BranchNinja());
+		
+
 	}
 }

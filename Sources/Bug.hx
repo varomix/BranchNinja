@@ -24,6 +24,8 @@ class Bug extends Sprite {
 		setAnimation(walk);
 	}
 
+	// TODO: if position is off screen left delete it
+
 	public function hitWithShot():Void
 	{
 		Reg.totalbugs--;

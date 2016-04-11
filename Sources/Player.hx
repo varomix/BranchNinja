@@ -11,7 +11,7 @@ import kha.Scheduler;
 
 class Player extends Sprite {
 	private static var instance:Player;
-	private static var health:Int;
+	public static var health(default, null):Int;
 	private var invincibility:Bool;
 
 	// SETUP ANIMATIONS
@@ -116,6 +116,11 @@ class Player extends Sprite {
 	    return alive;
 	}
 
+	public function set_alive(state:Bool)
+	{
+	    alive = state;
+	}
+
 	public static function get_commits():Int
 	{
 	    return commits;
@@ -124,6 +129,11 @@ class Player extends Sprite {
 	public static function get_health():Int
 	{
 		return health;	    
+	}
+
+	public function set_health(value:Int):Void
+	{
+		health = value;	    
 	}
 
 	public static function getInstance():Player
