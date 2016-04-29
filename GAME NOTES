@@ -4,36 +4,26 @@ tile size 36
 game size in tiles 16 x 9 
 game in pixels 576 x 324
 
-add effect when moving
-make branches, maybe tiled map? :) maybe random generation
+Convert ogg to wav
 
+  $ oggdec -o recording.wav recording.ogg
 
-Scheduler.addTimeTask(dowhatever, 2)
+Scheduler.addTimeTask(do whatever, 2)
 
-on void areas bounce player back to last position if life still left and decrese life
+Kill player when health is 0
 
-add hazards, spikes
+fix bug2 and 3 sprite sheets
 
-add score
+make bug2 and 3 hurt player
 
-make super mega large map level
-or make different levels
+add all enemies to a group or check for all enemies in player
 
+add sounds
 
-public function new() {
-  init();
-}
-function init() {
-  score = 0;
-  player = new Player();
-  enemy = new Enemy();
-}
-function onKeyUp(int key) {
-  switch (key) {
-    case Key.R:
- if (!player.alive) init();
-  }
-}
+menu shuriken intro
 
+add flash in intro
 
-http://try.haxe.org/#eA25c
+camera shake
+
+twitter share button :)

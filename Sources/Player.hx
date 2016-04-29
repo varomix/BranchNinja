@@ -120,6 +120,11 @@ class Player extends Sprite {
 	{
 	    alive = state;
 	}
+	
+	public function resetcommits()
+	{
+		commits = 0;
+	}
 
 	public static function get_commits():Int
 	{

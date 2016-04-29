@@ -3,5 +3,5 @@ project.addAssets('Assets/**');
 project.addSources('Sources');
 project.addLibrary('Kha2D');
 project.addLibrary('khatmx');
-project.addDefine('debug_collisions');
+// project.addDefine('debug_collisions');
 return project;

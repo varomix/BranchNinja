@@ -2,15 +2,14 @@ package;
 
 import kha.Assets;
 import kha.graphics2.Graphics;
-
 import kha.Sound;
+import kha.audio1.Audio;
 import kha2d.Scene;
 import kha2d.Sprite;
 import kha2d.Animation;
 
 class Shuriken extends Sprite{
 
-	public static var sound:Sound;
 
 	public function new(x:Float, y:Float)
 	{
@@ -20,10 +19,11 @@ class Shuriken extends Sprite{
 	    speedx = 10;
 	    // accx = 10;
 	    accy = 0;
-
     
 	    originX = 13;
-	    originY = 13;	
+	    originY = 13;
+		Audio.play(Assets.sounds.wooshshuriken);	
+				
 	}
 
 	override public function hit(sprite:Sprite):Void

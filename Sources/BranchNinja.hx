@@ -5,6 +5,8 @@ import kha.Framebuffer;
 import kha.Key;
 import kha.Scheduler;
 import kha.System;
+import kha.audio1.Audio;
+import kha.audio1.AudioChannel;
 import kha.input.Mouse;
 import kha.input.Keyboard;
 import kha2d.Direction;
@@ -32,6 +34,8 @@ class BranchNinja {
 	public var bugs2:TiledObjectGroup;
 	public var bugs3:TiledObjectGroup;
 	public var exit:TiledObjectGroup;
+	
+	public var music:AudioChannel;
 
 	public function new() {
 
@@ -42,6 +46,8 @@ class BranchNinja {
 	
 	public function create()
 	{
+		music = Audio.play(Assets.sounds.theme10, true);
+		music.play();
 		bitfont = Assets.fonts.bitlow;
 
 		// CREATE GUI
@@ -82,7 +88,9 @@ class BranchNinja {
 	}
 	
 	public function initGame():Void{
+		Scene.the.addOther(health);
 		Scene.the.setColissionMap(null);
+		// music.play();
 
 		col = map.getObjectGroupByName("floor");
 		for(obj in col)
@@ -126,6 +134,7 @@ class BranchNinja {
 		player.set_health(100);
 		player.set_alive(true);
 		player.visible = true;
+		player.resetcommits();
 		Scene.the.removeOther(Diefx.getInstance());
 		Scene.the.clear();
 		initGame();
