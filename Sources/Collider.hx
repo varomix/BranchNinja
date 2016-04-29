@@ -11,12 +11,12 @@ class Collider extends Sprite {
 	{
 	    super(null, width, height);
 	    this.x = x;
-	    this.y = y;
+	    this.y = y + 16;
 	    accy = 0;
 	}
 
 	override public function update():Void {
 		super.update();
-		this.x -= 2;
+		if(Player.get_alive()) this.x -= Reg.gameSpeed;
 	}
 }

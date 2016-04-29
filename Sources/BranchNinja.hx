@@ -7,41 +7,41 @@ import kha.Scheduler;
 import kha.System;
 import kha.input.Mouse;
 import kha.input.Keyboard;
-import kha.tiled.TiledMap;
 import kha2d.Direction;
 import kha2d.Scene;
 import kha2d.Sprite;
 import kha.Font;
 import kha.Color;
-import kha.tiled.TiledObjectGroup;
+import kha.Image;
+import khatmx.TiledMap;
+import khatmx.TiledObjectGroup;
 
-class BranchNinja extends State {
+class BranchNinja {
 
 	public var player:Player;
 	public var bug:Bug;
 
 	public var map:TiledMap;
-	public var worldSpeed:Int;
 	public var bitfont:Font;
 	public var health:Health;
 
 	var collider:Sprite;
 	public var col:TiledObjectGroup;
 	public var kraks:TiledObjectGroup;
+	public var bugs1:TiledObjectGroup;
+	public var bugs2:TiledObjectGroup;
+	public var bugs3:TiledObjectGroup;
+	public var exit:TiledObjectGroup;
 
 	public function new() {
-		super(); 
 
-		// System.notifyOnRender(render);
-		// Scheduler.addTimeTask(update, 0, 1 / 60);
+		System.notifyOnRender(render);
+		Scheduler.addTimeTask(update, 0, 1 / 60);
 		Assets.loadEverything(create);
-
 	}
-
-	override public function create()
+	
+	public function create()
 	{
-		// super.create();
-		worldSpeed = 2;
 		bitfont = Assets.fonts.bitlow;
 
 		// CREATE GUI
@@ -50,7 +50,7 @@ class BranchNinja extends State {
 
 		// MAP LOADING
 		// map = TiledMap.fromAssets(Assets.blobs.test01_tmx.toString());
-		map = TiledMap.fromAssets(Assets.blobs.testMap_tmx.toString());
+		map = TiledMap.fromAssets(Assets.blobs.level1_tmx.toString());
 
 		// trace(map.layers[1].tiles[0].gid);
 		// trace(map.getObjectGroupByName("collisions"));
@@ -71,20 +71,23 @@ class BranchNinja extends State {
 
 		// entities
 		player = new Player();
-		bug = new Bug();
 
-		// Scene.the.addBackgroundTilemap(tmxEntity); 
+		// Scene.the.setColissionMap(null);
 
-		bug.x = 450;
-		bug.y = 36;
+		initGame();
+		
+		if (Keyboard.get() != null) Keyboard.get().notify(keyDown, null);
+		if (Mouse.get() != null) Mouse.get().notify(onMouseDown, null, null, null);
 
-		Reg.totalbugs = 300;
-
+	}
+	
+	public function initGame():Void{
 		Scene.the.setColissionMap(null);
 
-		col = map.getObjectGroupByName("collisions");
+		col = map.getObjectGroupByName("floor");
 		for(obj in col)
 		{
+			if(col == null) return;
 			Scene.the.addEnemy(new Collider(obj.x, obj.y, obj.width, obj.height));
 		}
 
@@ -92,28 +95,40 @@ class BranchNinja extends State {
 		for (krk in kraks) {
 			Scene.the.addOther(new Kraken(krk.x, krk.y));
 		}
+		
+		bugs1 = map.getObjectGroupByName("bug1");
+		// trace(bugs1.objects.length);
+		for (bug in bugs1) {
+			Scene.the.addEnemy(new Bug(bug.x, bug.y));
+		}
+		
+		bugs2 = map.getObjectGroupByName("bug2");
+		for (bug in bugs2) {
+			Scene.the.addEnemy(new Bug2(bug.x, bug.y));
+		}
+		
+		Reg.totalbugs = 0;
+		Reg.totalbugs += bugs1.objects.length;
+		Reg.totalbugs += bugs2.objects.length;
+		
 
-
-		player.x = player.y = 36 + 72;
+		player.x = 72;
+		player.y = 36;
 		Scene.the.addHero(player);
-		Scene.the.addEnemy(bug);
-
-		if (Keyboard.get() != null) Keyboard.get().notify(keyDown, null);
-		if (Mouse.get() != null) Mouse.get().notify(onMouseDown, null, null, null);
 
 	}
 
 	public function resetGame()
 	{
-		this.map.camx = 0;
-		player.x = player.y = 36 + 72;
-	    bug.x = 450;
-		bug.y = 36;
-		Reg.totalbugs = 300;
+		this.map.camx = 0;	// reset cam
+		player.x = 72;
+		player.y = 36;
 		player.set_health(100);
 		player.set_alive(true);
 		player.visible = true;
 		Scene.the.removeOther(Diefx.getInstance());
+		Scene.the.clear();
+		initGame();
 	}
 
 	public function shot():Void
@@ -121,20 +136,20 @@ class BranchNinja extends State {
 		Scene.the.addProjectile(new Shuriken(0, 10)); 
 	}
 
-	override public function update(): Void 
+	public function update(): Void 
 	{
 		Scene.the.update();
 
 		if(Player.get_alive())
 		{
-			this.map.camx -= worldSpeed;
+			this.map.camx -= Reg.gameSpeed;
 			this.map.camy = 16;
 		}
 		
 	}
 
-	override public function render(framebuffer: Framebuffer): Void {
-		super.render(framebuffer);
+	public function render(framebuffer: Framebuffer): Void {
+		
 
 		if(this.map == null) return;
 
@@ -167,11 +182,10 @@ class BranchNinja extends State {
 
 	}
 
-	override public function destroy()
+	public function destroy()
 	{
-	    super.destroy();
-	    trace("DESTROY BRANCHNINJA");
 	    Scene.the.clear();
+	    trace("DESTROY BRANCHNINJA");
 	    player = null;
 	    bug = null;
 	    map = null;
@@ -200,8 +214,9 @@ class BranchNinja extends State {
 	public function onMouseDown(button:Int, x:Int, y:Int):Void {
 		if (button == 0){
 			if(Player.get_alive() == false){
-				Game.switchState(new BranchNinja());
-				// resetGame();
+				// Game.switchState(new BranchNinja());
+				trace("resetGame");
+				resetGame();
 			}
 		}
 	}

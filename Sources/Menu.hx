@@ -11,34 +11,43 @@ import kha.input.Keyboard;
 import kha.Scheduler;
 import kha.input.Mouse;
 
-class Menu extends State {
+class Menu {
 
 	public var bitfont:Font;
 	public var logo:Image;
 
 	public function new():Void
 	{
-		super();
-	 //    System.notifyOnRender(render);
-		// Scheduler.addTimeTask(update, 0, 1 / 60);
+		System.notifyOnRender(render);
+		Scheduler.addTimeTask(update, 0, 1 / 60);
 		Assets.loadEverything(create);
 
 	}
-
-	override public function create():Void
+	
+	public function create()
 	{
-
-		super.create();
-	    bitfont = Assets.fonts.bitlow;
+		
+		trace('creating');
+		bitfont = Assets.fonts.bitlow;
 	    logo = Assets.images.BranchNinja_LOGO_v01;
 
 		if (Keyboard.get() != null) Keyboard.get().notify(keyDown, null);
 		if (Mouse.get() != null) Mouse.get().notify(onMouseDown, null, null, null);
 	}
+	
+	public function destroy():Void
+	{
+		logo = null;
+		bitfont = null;
+		Keyboard.get().remove(keyDown, null);
+		Mouse.get().remove(onMouseDown, null, null, null);
+	}
 
 	public function onMouseDown(button:Int, x:Int, y:Int):Void {
 		if (button == 0){
-			Game.switchState(new BranchNinja());
+			destroy();
+			// Game.switchState(new BranchNinja());
+			new BranchNinja();
 		}
 	}
 
@@ -50,26 +59,19 @@ class Menu extends State {
 		// }
 	}
 
-	override public function destroy()
+	public function update():Void
 	{
-	    super.destroy();
-	    trace("Destroying Menu");
-
-	    Keyboard.get().remove(keyDown, null);
-		Mouse.get().remove(onMouseDown, null, null, null);
-
 	}
 
-	override public function update():Void
-	{
-	    super.update();
-	}
-
-	override public function render(framebuffer:Framebuffer): Void {
+	public function render(framebuffer:Framebuffer): Void {
+		// super.render(framebuffer);
+		// trace(bitfont);
+		if(bitfont == null) return;
 		var g = framebuffer.g2;
 
 		g.begin();
 		g.font = bitfont;
+		// g.font = Assets.fonts.bitlow;
 		g.fontSize = 32;
 		g.color = Color.Black;
 		g.fillRect(0,0, System.windowWidth(), System.windowHeight());

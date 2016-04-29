@@ -14,7 +14,7 @@ class Explosion extends Sprite {
 	public function new(x:Float, y:Float)
 	{
 		// we use super to import the image
-		super(Assets.images.effects, 36, 36, 0);
+		super(Assets.images.effects, 36, 36, 2);
 		this.x = x;
 		this.y = y;
 		accy = 0;

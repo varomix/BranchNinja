@@ -10,7 +10,7 @@ class Kraken extends Sprite {
 	{
 	    super(Assets.images.pixelKraken, 30, 23);
 	    this.x = x;
-	    this.y = y + 16;
+	    this.y = y - 7;
 	    accy = 0;
 	} 
 
