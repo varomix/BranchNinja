@@ -46,18 +46,18 @@ class BranchNinja {
 	
 	public function create()
 	{
-		music = Audio.play(Assets.sounds.theme10, true);
-		music.play();
+		// music = Audio.play(Assets.sounds.theme10, true);
+		// music.play();
 		bitfont = Assets.fonts.bitlow;
 
 		// CREATE GUI
 		health = new Health(44, -2);
 		Scene.the.addOther(health);
-
+		
 		// MAP LOADING
 		// map = TiledMap.fromAssets(Assets.blobs.test01_tmx.toString());
 		map = TiledMap.fromAssets(Assets.blobs.level1_tmx.toString());
-
+		
 		// trace(map.layers[1].tiles[0].gid);
 		// trace(map.getObjectGroupByName("collisions"));
 

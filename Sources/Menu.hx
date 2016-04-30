@@ -46,17 +46,17 @@ class Menu {
 	public function onMouseDown(button:Int, x:Int, y:Int):Void {
 		if (button == 0){
 			destroy();
-			// Game.switchState(new BranchNinja());
 			new BranchNinja();
 		}
 	}
 
 	private function keyDown(key: Key, char: String): Void {
-		// switch (key) {
-		// case ENTER, CTRL:
-		// 	Game.switchState(new BranchNinja());
-		// default:
-		// }
+		switch (key) {
+		case ENTER:
+			destroy();
+			new BranchNinja();
+		default:
+		}
 	}
 
 	public function update():Void
@@ -77,9 +77,9 @@ class Menu {
 		g.fillRect(0,0, System.windowWidth(), System.windowHeight());
 
 		g.color = Color.White;
-		g.drawString("CLICK TO PLAY", 160, 230);
+		g.drawString("CLICK OR ENTER TO PLAY", 80, 230);
 		g.fontSize = 16;
-		g.drawString("USE ARROWS TO JUMP UP AND DOWN, CTRL TO SHOOT", 50, 280);
+		g.drawString("USE ARROWS TO JUMP UP AND DOWN, CTRL TO SHOOT", 65, 280);
 		g.drawImage(logo, System.windowWidth() / 2 - logo.width/2, System.windowHeight() / 2 - logo.height/2 - 30);
 
 		g.end();
