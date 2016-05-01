@@ -5,6 +5,7 @@ import kha.Framebuffer;
 import kha.Key;
 import kha.Scheduler;
 import kha.System;
+import kha.Sound;
 import kha.audio1.Audio;
 import kha.audio1.AudioChannel;
 import kha.input.Mouse;
@@ -35,28 +36,30 @@ class BranchNinja {
 	public var bugs3:TiledObjectGroup;
 	public var exit:TiledObjectGroup;
 	
-	public var music:AudioChannel;
+	public var music:Sound;
 
 	public function new() {
 
 		System.notifyOnRender(render);
 		Scheduler.addTimeTask(update, 0, 1 / 60);
-		Assets.loadEverything(create);
+		// Assets.loadEverything(create);
+		create();
 	}
 	
 	public function create()
 	{
-		// music = Audio.play(Assets.sounds.theme10, true);
+		Audio.play(Assets.sounds.theme10, true);
 		// music.play();
 		bitfont = Assets.fonts.bitlow;
 
 		// CREATE GUI
 		health = new Health(44, -2);
 		Scene.the.addOther(health);
-		
+
 		// MAP LOADING
 		// map = TiledMap.fromAssets(Assets.blobs.test01_tmx.toString());
 		map = TiledMap.fromAssets(Assets.blobs.level1_tmx.toString());
+		
 		
 		// trace(map.layers[1].tiles[0].gid);
 		// trace(map.getObjectGroupByName("collisions"));

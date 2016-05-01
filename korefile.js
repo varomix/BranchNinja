@@ -9,4 +9,7 @@ solution.addProject(project);
 if (fs.existsSync(path.join('Libraries/Kha2D', 'korefile.js'))) {
 	project.addSubProject(Solution.createProject('Libraries/Kha2D'));
 }
+if (fs.existsSync(path.join('Libraries/khatmx', 'korefile.js'))) {
+	project.addSubProject(Solution.createProject('Libraries/khatmx'));
+}
 return solution;
