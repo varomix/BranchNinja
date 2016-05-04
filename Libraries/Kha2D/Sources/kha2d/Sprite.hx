@@ -11,7 +11,7 @@ import kha.math.Vector2;
 class Sprite {
 	private var image: Image;
 	private var animation: Animation;
-	private var collider: Rectangle;
+	public var collider: Rectangle;
 	
 	public var x: Float;
 	public var y: Float;

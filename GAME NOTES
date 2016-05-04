@@ -4,25 +4,19 @@ tile size 36
 game size in tiles 16 x 9 
 game in pixels 576 x 324
 
-Convert ogg to wav
+Convert ogg to wav makes game SLOOOOOOW to load
 
   $ oggdec -o recording.wav recording.ogg
 
 Scheduler.addTimeTask(do whatever, 2)
 
-Kill player when health is 0
-
-fix bug2 and 3 sprite sheets
-
-make bug2 and 3 hurt player
+ TODO:
 
 add all enemies to a group or check for all enemies in player
 
+Variable frame rate for animations
+
 add sounds
-
-menu shuriken intro
-
-add flash in intro
 
 camera shake
 

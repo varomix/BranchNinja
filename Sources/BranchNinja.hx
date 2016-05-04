@@ -18,6 +18,9 @@ import kha.Color;
 import kha.Image;
 import khatmx.TiledMap;
 import khatmx.TiledObjectGroup;
+import entities.*;
+import fx.*;
+import ui.*;
 
 class BranchNinja {
 
@@ -42,15 +45,20 @@ class BranchNinja {
 
 		System.notifyOnRender(render);
 		Scheduler.addTimeTask(update, 0, 1 / 60);
+		
 		// Assets.loadEverything(create);
+		// music = Assets.loadSoundFromPath("theme10.ogg", function(sound:Sound){
+		// 	trace("sound loaded", sound);
+		// 	music = sound.uncompress();
+		// });
 		create();
 	}
 	
 	public function create()
 	{
-		Audio.play(Assets.sounds.theme10, true);
-		// music.play();
-		bitfont = Assets.fonts.bitlow;
+		// Audio.play(music, true);
+		// music.uncompress();
+		bitfont = Assets.fonts.fnt_bitlow;
 
 		// CREATE GUI
 		health = new Health(44, -2);
@@ -59,7 +67,6 @@ class BranchNinja {
 		// MAP LOADING
 		// map = TiledMap.fromAssets(Assets.blobs.test01_tmx.toString());
 		map = TiledMap.fromAssets(Assets.blobs.level1_tmx.toString());
-		
 		
 		// trace(map.layers[1].tiles[0].gid);
 		// trace(map.getObjectGroupByName("collisions"));
@@ -118,9 +125,15 @@ class BranchNinja {
 			Scene.the.addEnemy(new Bug2(bug.x, bug.y));
 		}
 		
+		bugs3 = map.getObjectGroupByName("bug3");
+		for (bug in bugs3) {
+			Scene.the.addEnemy(new Bug3(bug.x, bug.y));
+		}
+		
 		Reg.totalbugs = 0;
 		Reg.totalbugs += bugs1.objects.length;
 		Reg.totalbugs += bugs2.objects.length;
+		Reg.totalbugs += bugs3.objects.length;
 		
 
 		player.x = 72;
@@ -184,9 +197,12 @@ class BranchNinja {
 		if (!Player.get_alive()) {
 			g.color = Color.Black;
 			g.fillRect(0, 145, System.windowWidth(), 65);
-			g.fontSize = 50;
 			g.color = Color.Magenta;
-			g.drawString("CLICK TO TRY AGAIN", 30, System.windowHeight() / 2 - 10);
+			g.fontSize = 30;
+			g.drawString("CLICK OR", 50, System.windowHeight() / 2 - 10);
+			g.drawString("ENTER TO", 50, System.windowHeight() / 2 + 17);
+			g.fontSize = 50;
+			g.drawString("TRY AGAIN", 230, System.windowHeight() / 2 - 10);
 		}
 		// render scene on top
 		Scene.the.render(g);
@@ -218,7 +234,9 @@ class BranchNinja {
 		case CTRL:
 			Player.getInstance().shot();
 		case ENTER:
-			trace("enter again");
+			if(Player.get_alive() == false){
+				resetGame();
+			}
 		default:
 		}
 	}
@@ -226,8 +244,6 @@ class BranchNinja {
 	public function onMouseDown(button:Int, x:Int, y:Int):Void {
 		if (button == 0){
 			if(Player.get_alive() == false){
-				// Game.switchState(new BranchNinja());
-				trace("resetGame");
 				resetGame();
 			}
 		}

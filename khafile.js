@@ -1,7 +1,11 @@
 var project = new Project('Branch Ninja');
-project.addAssets('Assets/**');
+project.addAssets('Assets/**.png');
+project.addAssets('Assets/**.tmx');
+project.addAssets('Assets/**.ttf');
+project.addAssets('Assets/**snd_**');
 project.addSources('Sources');
 project.addLibrary('Kha2D');
 project.addLibrary('khatmx');
+project.addLibrary('tweenx909');
 // project.addDefine('debug_collisions');
 return project;
