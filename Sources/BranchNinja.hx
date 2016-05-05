@@ -47,16 +47,16 @@ class BranchNinja {
 		Scheduler.addTimeTask(update, 0, 1 / 60);
 		
 		// Assets.loadEverything(create);
-		// music = Assets.loadSoundFromPath("theme10.ogg", function(sound:Sound){
-		// 	trace("sound loaded", sound);
-		// 	music = sound.uncompress();
-		// });
+		Assets.loadSoundFromPath("theme10.ogg", function(sound:Sound){
+			trace(sound);
+			music = sound;
+		});
 		create();
 	}
 	
 	public function create()
 	{
-		// Audio.play(music, true);
+		Audio.stream(music, true);
 		// music.uncompress();
 		bitfont = Assets.fonts.fnt_bitlow;
 
