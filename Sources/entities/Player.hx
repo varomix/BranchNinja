@@ -71,13 +71,15 @@ class Player extends Sprite {
 			{
 				Scene.the.addProjectile(new Jumpfx(this.x, this.y));
 				this.y -= 72;
+				Audio.play(Assets.sounds.snd_jump);	
+				
 			}
 			if(dir == Direction.DOWN && this.y < 252)
 			{
 				Scene.the.addProjectile(new Jumpfx(this.x, this.y));
 				this.y += 72;
+				Audio.play(Assets.sounds.snd_jump);	
 			}
-			Audio.play(Assets.sounds.snd_jump);	
 			
 		}
 	    
@@ -102,8 +104,6 @@ class Player extends Sprite {
 				visible = false;
 				Audio.play(Assets.sounds.snd_explosiondead);
 				Scheduler.addTimeTask(function()Audio.play(Assets.sounds.snd_game_over), 0.2);
-					
-					
 				
 			}
 			alive = false;
@@ -114,6 +114,8 @@ class Player extends Sprite {
 			Scene.the.addProjectile(new Pickupfx(sprite.x-12, sprite.y - 8));
 			Scene.the.removeOther(sprite);
 			commits++;
+			Audio.play(Assets.sounds.snd_gold);	
+			
 		}
 	}
 	

@@ -28,16 +28,18 @@ class Shuriken extends Sprite{
 		if(Std.is(sprite, Bug)){
 			Scene.the.removeProjectile(this);
 			cast(sprite, Bug).hitWithShot();
+			Audio.play(Assets.sounds.snd_hit);
 		}
 		if(Std.is(sprite, Bug2)){
 			Scene.the.removeProjectile(this);
 			cast(sprite, Bug2).hitWithShot();
+			Audio.play(Assets.sounds.snd_hit);
 		}
 		if(Std.is(sprite, Bug3)){
 			Scene.the.removeProjectile(this);
 			cast(sprite, Bug3).hitWithShot();
+			Audio.play(Assets.sounds.snd_hit);	
 		}
-		Audio.play(Assets.sounds.snd_hit);	
 		
 	}
 

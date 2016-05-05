@@ -40,24 +40,26 @@ class BranchNinja {
 	public var exit:TiledObjectGroup;
 	
 	public var music:Sound;
+	public var musicChannel:AudioChannel;
+	public var playing:Bool;
 
 	public function new() {
 
 		System.notifyOnRender(render);
 		Scheduler.addTimeTask(update, 0, 1 / 60);
 		
-		// Assets.loadEverything(create);
+		Assets.loadEverything(create);
 		Assets.loadSoundFromPath("theme10.ogg", function(sound:Sound){
-			trace(sound);
 			music = sound;
 		});
-		create();
+		playing = false;
+		
+		if(music != null)
+			create();
 	}
 	
 	public function create()
 	{
-		Audio.stream(music, true);
-		// music.uncompress();
 		bitfont = Assets.fonts.fnt_bitlow;
 
 		// CREATE GUI
@@ -68,27 +70,8 @@ class BranchNinja {
 		// map = TiledMap.fromAssets(Assets.blobs.test01_tmx.toString());
 		map = TiledMap.fromAssets(Assets.blobs.level1_tmx.toString());
 		
-		// trace(map.layers[1].tiles[0].gid);
-		// trace(map.getObjectGroupByName("collisions"));
-
-
-		// build the Kha2D map
-		// var backmap = new Array<Array<Int>>();
-
-		// for (y in 0...map.heightInTiles) for (x in 0...map.widthInTiles) {backmap[x][y] = this.map.layers[0].tiles[x].gid; }
-
-		// trace(backmap);	
-		
-		
-		// testing kha2d tilemaps
-		// var backtilemap : Tilemap = new Tilemap(Assets.images.mapTiles_colors, 36, 36, backmap, Tile.tiles);
-		// var tilemap : Tilemap = new Tilemap(Assets.images.mapTiles_colors, 36, 36, map, Tile.tiles);
-		
-
 		// entities
 		player = new Player();
-
-		// Scene.the.setColissionMap(null);
 
 		initGame();
 		
@@ -98,6 +81,11 @@ class BranchNinja {
 	}
 	
 	public function initGame():Void{
+		musicChannel = Audio.stream(music, true);
+		if(Player.get_alive())
+			musicChannel.play();
+			musicChannel.volume = 0.1;		// TODO:  not working
+		
 		Scene.the.addOther(health);
 		Scene.the.setColissionMap(null);
 		// music.play();
@@ -139,6 +127,7 @@ class BranchNinja {
 		player.x = 72;
 		player.y = 36;
 		Scene.the.addHero(player);
+		playing = true;
 
 	}
 
@@ -169,8 +158,16 @@ class BranchNinja {
 		{
 			this.map.camx -= Reg.gameSpeed;
 			this.map.camy = 16;
+		} 
+	}
+	
+	public function deadstate():Void{
+		if(playing = true){
+			playing = false;
+			trace("seems like I'm dead");
+			musicChannel.stop();
+			
 		}
-		
 	}
 
 	public function render(framebuffer: Framebuffer): Void {
@@ -203,6 +200,7 @@ class BranchNinja {
 			g.drawString("ENTER TO", 50, System.windowHeight() / 2 + 17);
 			g.fontSize = 50;
 			g.drawString("TRY AGAIN", 230, System.windowHeight() / 2 - 10);
+			if(playing) deadstate();
 		}
 		// render scene on top
 		Scene.the.render(g);
